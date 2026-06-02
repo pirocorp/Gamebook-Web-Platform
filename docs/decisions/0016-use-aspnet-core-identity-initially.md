@@ -43,5 +43,6 @@ Positive:
 
 Negative:
 
-- Requires secure password handling, token configuration, and account management.
-- External login convenience is postponed.
+- Requires account management.
+- Requires correct cookie security configuration.
+- Requires CSRF protection for cookie-authenticated unsafe requests.
