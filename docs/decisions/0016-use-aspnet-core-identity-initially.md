@@ -20,7 +20,8 @@ Alternatives considered:
 
 Initially use ASP.NET Core Identity with PostgreSQL-backed user tables.
 
-The API can use JWT tokens for frontend authentication.
+The MVP uses ASP.NET Core Identity with HttpOnly cookie authentication for browser pages and API endpoints.
+JWT bearer authentication is not used in MVP.
 
 External providers may be added later.
 
