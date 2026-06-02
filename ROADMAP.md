@@ -5,8 +5,8 @@
 [x] Project documentation
 [x] Initial ADRs
 [x] AI instructions
-[ ] Update docs for Vertical Slice Architecture + MediatR
-[ ] Update docs for Identity cookie authentication
+[x] Vertical Slice Architecture + MediatR decision
+[x] Identity cookie authentication decision
 
 ## Phase 1 — First playable vertical slice
 

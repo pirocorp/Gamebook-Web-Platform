@@ -1,14 +1,38 @@
-# GameBook Platform
+# GameBook Web Platform
 
-A web platform for hosting and playing interactive gamebooks. ASP.NET Core using Vertical Slice Architecture with Clean Architecture boundaries
+A public web platform for hosting and playing interactive gamebooks.
 
+The project is designed as a generic gamebook engine, not as a hardcoded reader for one book. The first playable vertical slice uses a curated subset of **Котаракът и Спасението на Аврея** to validate the architecture.
 
+## Stack
 
-Stack:
+- Backend: ASP.NET Core, Controllers, MediatR, EF Core
+- Domain: rich domain entities, aggregates, Clean Architecture boundaries
+- Database: PostgreSQL, JSONB, EF Core migrations
+- Authentication: ASP.NET Core Identity cookie authentication
+- Frontend: Vanilla TypeScript, Vite, HTML, CSS
+- Deployment: Docker Compose first
 
-* ASP.NET Core
-* MediatR
-* PostgreSQL
-* Vanilla TypeScript + Vite
-* Docker
+## Milestone 1
 
+Milestone 1 focuses on a first playable vertical slice:
+
+- `/books`
+- `/books/{slug}`
+- `/login`
+- `/register`
+- `/play/{gameId}`
+- anonymous localStorage saves
+- authenticated PostgreSQL saves
+- backend-owned game logic
+- seeded gamebook package from `content/gamebooks/`
+
+Admin editor, full book import, deployment hardening, password reset, email confirmation, and external login are out of scope for Milestone 1.
+
+## Important docs
+
+- `AGENTS.md` — AI/developer rules
+- `ARCHITECTURE.md` — high-level architecture
+- `ROADMAP.md` — implementation roadmap
+- `docs/decisions/` — architecture decision records
+- `docs/project/implementation-plan.md` — complete implementation plan
