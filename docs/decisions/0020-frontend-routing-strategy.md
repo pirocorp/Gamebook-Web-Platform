@@ -15,6 +15,7 @@ Examples:
 /books
 /books/book-slug
 /authors
+/admin
 
 
 Interactive areas behave as single page applications.
@@ -24,8 +25,7 @@ Examples:
 /play/{id}
 
 Admin:
-No SPA decision yet.
-Admin routing strategy will be decided when admin implementation starts.
+No SPA
 
 ## Reasons
 
