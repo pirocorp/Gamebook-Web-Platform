@@ -1,2 +1,9 @@
-# Gamebook-Web-Platform
-AI-assisted project, public web application for hosting and playing interactive gamebooks.
+# GameBook Platform
+
+A web platform for hosting and playing interactive gamebooks.
+
+Stack:
+- ASP.NET Core
+- PostgreSQL
+- Vanilla TypeScript + Vite
+- Docker
