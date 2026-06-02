@@ -33,5 +33,7 @@ This folder contains project-level Architecture Decision Records (ADRs).
 | 0019 | API style: REST | Accepted |
 | 0020 | Frontend routing strategy | Accepted |
 | 0021 | Admin UI location | Accepted |
+| 0022 | Use Vertical Slice Architecture with MediatR | Accepted |
+| 0023 | Use EF Core migrations for database evolution | Accepted |
 
 All ADRs 0001-0021 are now accepted.
