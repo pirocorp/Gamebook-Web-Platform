@@ -37,5 +37,7 @@ This folder contains project-level Architecture Decision Records (ADRs).
 | 0023 | Use EF Core migrations for database evolution | Accepted |
 | 0024 | Use rich domain entities, aggregates, and Fluent API persistence mapping | Accepted |
 | 0025 | Use single-language gamebooks in MVP | Accepted |
+| 0026 | Use ASP.NET Core Identity cookie authentication | Accepted |
+
 
 All ADRs 0001-0021 are now accepted.

@@ -1,50 +1,144 @@
-\# Backend
+# Backend Architecture
 
+## Stack
 
+- ASP.NET Core
+- Controllers
+- MediatR
+- Vertical Slice Architecture
+- Clean Architecture boundaries
+- EF Core
+- PostgreSQL
+- ASP.NET Core Identity cookie authentication
+
+## Structure
+
+```text
+backend/
 
 GameBook.Api/
+  Controllers/
+  Features/
+  Common/
 
+GameBook.Core/
+  Domain/
+  GameEngine/
+  Rules/
+  Effects/
+  Interfaces/
 
+GameBook.Data/
+  GameBookDbContext.cs
+  Configurations/
+  Repositories/
+  Migrations/
 
+GameBook.Tests/
+```
+
+## Request Flow
+
+```text
+HTTP Request
+      |
+Controller
+      |
+MediatR Command/Query
+      |
+Feature Handler
+      |
+Core Domain / Game Engine
+      |
+Repository
+      |
+EF Core / PostgreSQL
+```
+
+## Controllers
+
+Controllers are thin.
+
+They may:
+
+- define HTTP routes
+- bind requests
+- apply `[Authorize]`
+- call MediatR
+- return HTTP responses
+
+They must not:
+
+- contain game rules
+- access DbContext directly
+- contain domain workflows
+- apply choice effects directly
+
+## Features
+
+Feature code is grouped by use case.
+
+Example:
+
+```text
 Features/
+  Games/
+    ExecuteChoice/
+      ExecuteChoiceCommand.cs
+      ExecuteChoiceHandler.cs
+      ExecuteChoiceResponse.cs
+      ExecuteChoiceValidator.cs
+```
 
-&#x20;Books/
+Avoid large generic folders such as:
 
-&#x20;  GetBooks/
+```text
+Services/
+DTOs/
+Validators/
+```
 
+unless they are truly shared infrastructure concerns.
 
+## Core
 
-&#x20;Games/
+`GameBook.Core` contains:
 
-&#x20;  StartGame/
+- rich domain entities
+- aggregate roots
+- game engine
+- rules engine
+- effects engine
+- interfaces
 
-&#x20;  ExecuteChoice/
+Core must not reference:
 
+- ASP.NET Core
+- EF Core
+- PostgreSQL
+- MediatR
 
+## Data
 
-&#x20;Admin/
+`GameBook.Data` contains:
 
-&#x20;  CreateBook/
+- EF Core DbContext
+- Fluent API configurations
+- repository implementations
+- migrations
 
+No EF attributes are used in Core.
 
+## Authentication
 
+MVP uses ASP.NET Core Identity cookie authentication.
 
+The same cookie authentication protects:
 
-Example slice:
+- classic pages
+- `/play` SPA API calls
+- REST API endpoints
 
+API endpoints must return `401` or `403` for unauthorized requests, not redirect to login HTML.
 
-
-ExecuteChoice/
-
-
-
-ExecuteChoiceEndpoint.cs
-
-ExecuteChoiceCommand.cs
-
-ExecuteChoiceHandler.cs
-
-ExecuteChoiceValidator.cs
-
-ExecuteChoiceResponse.cs
-
+JWT bearer authentication is not part of MVP.

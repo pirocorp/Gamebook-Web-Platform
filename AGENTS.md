@@ -1,106 +1,202 @@
 # AI Development Instructions
 
-## Stack
+## Project Goal
 
+Build a public web platform for hosting and playing interactive gamebooks.
 
+The first implementation is a vertical slice using a subset of `Котаракът и Спасението на Аврея`.
 
-\## Backend Architecture
+The app is not a one-book hardcoded reader. It is a generic gamebook engine.
 
+## Confirmed Stack
 
+Backend:
 
-The backend uses:
+- C#
+- ASP.NET Core
+- Controllers + MediatR
+- Vertical Slice Architecture
+- Clean Architecture boundaries
+- EF Core
+- PostgreSQL
+- ASP.NET Core Identity
+- HttpOnly cookie authentication
 
+Frontend:
 
+- Vanilla TypeScript
+- Vite
+- HTML
+- CSS
+- No React/Vue/Angular
 
-Vertical Slice Architecture
+Database:
 
-\+
+- PostgreSQL
+- JSONB for dynamic game data
+- EF Core migrations from day one
 
-Clean Architecture boundaries
+## Backend Rules
 
-\+
+Use vertical slices.
 
-MediatR
+Feature code belongs under:
 
+```text
+GameBook.Api/Features/{Area}/{Action}/
+```
 
+Controllers must be thin.
 
-Features are organized by use case.
+Controllers may handle:
 
+- routing
+- model binding
+- authorization attributes
+- calling MediatR
+- returning HTTP responses
 
+Controllers must not contain:
 
-Example:
+- game rules
+- domain logic
+- EF Core queries
+- business workflows
 
+MediatR handlers orchestrate use cases.
 
+Domain rules belong in `GameBook.Core`.
 
-backend/GameBook.Api/Features/Games/ExecuteChoice/
+## Domain Rules
 
+Use rich domain entities and aggregates.
 
+Aggregate roots:
 
-Contains:
+- `GameBook`
+- `SaveGame`
+- `MediaAsset`
 
-\- Endpoint
+Do not create repositories for every child entity.
 
-\- Command/Query
+Avoid:
 
-\- Handler
+- `IEpisodeRepository`
+- `IChoiceRepository`
 
-\- Validator
+unless a later ADR explicitly allows it.
 
-\- Response
+Domain entities must not depend on EF Core.
 
+Do not use EF attributes in Core:
 
+```text
+[Table]
+[Column]
+[Key]
+[ForeignKey]
+```
 
-Do not create generic folders:
+Use Fluent API mappings in `GameBook.Data`.
 
+## Authentication Rules
 
+MVP authentication uses ASP.NET Core Identity cookie authentication.
 
-\- Controllers/
+This applies to:
 
-\- Services/
+- classic pages
+- `/play` SPA requests
+- REST API endpoints
 
-\- DTOs/
+Do not use JWT bearer authentication in MVP.
 
-\- Validators/
+Do not store authentication tokens in:
 
+- localStorage
+- sessionStorage
 
+Frontend requests should rely on browser cookies.
 
-unless they are infrastructure-level concerns.
+Use:
 
+```typescript
+fetch(url, {
+    credentials: "include"
+});
+```
 
+Protected API endpoints use `[Authorize]`.
 
-Business rules belong in GameBook.Core.
+API endpoints must return `401` or `403`, not HTML redirects.
 
+## Frontend Rules
 
+Do not introduce React, Vue, Angular, Svelte, or another frontend framework.
 
-MediatR handlers orchestrate workflows but do not contain domain rules.
+Use Vanilla TypeScript modules.
 
+Routing model:
 
+- classic multipage-style pages for public/auth pages
+- SPA behavior only for `/play`
 
+Frontend must not decide game rules.
 
+Frontend may render:
 
-\## Frontend:
+- episode text
+- diary state
+- available choices returned by backend
 
+Backend remains authoritative.
 
-Vanilla TypeScript + Vite
+## Database Rules
 
+All schema changes use EF Core migrations.
 
+Do not manually edit database schema.
 
+Do not use `EnsureCreated()` for app schema.
 
+Use strongly typed C# objects serialized to JSONB for:
 
+- player state
+- conditions
+- effects
+- rules
+- history
 
+## Content Rules
 
+Books are data.
 
+The engine must not hardcode `Котаракът` logic.
 
+Seed gamebooks live under:
 
+```text
+content/gamebooks/
+```
 
-## Rules
+For MVP:
 
-* Do not introduce React
-* Do not replace PostgreSQL
-* Do not put game logic in the frontend
-* Backend validates choices
-* Backend is the source of truth for game rules.
-* Use JSONB for flexible game rules
-* Keep published gamebook versions immutable
-* Do not hardcode books into the engine.
+```text
+One GameBook = One Language
+```
 
+A translated book is another `GameBook`.
+
+## Milestone 1 Exclusions
+
+Do not add:
+
+- admin editor
+- full book import UI
+- anonymous save to account migration
+- password reset
+- email confirmation
+- external login
+- HTTPS/certificate/reverse proxy production hardening
+
+unless explicitly requested.
