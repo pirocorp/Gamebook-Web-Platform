@@ -237,6 +237,18 @@ Use both `originalText` and `displayText`.
 
 Episode keys are strings. Conditions are `null` or one condition object. Effects are always arrays. Ordinary choice navigation uses `targetEpisodeKey`.
 
+Source extraction assets live under:
+
+```text
+content/source/kotarakat-avreya/
+```
+
+Reusable content import tools live under:
+
+```text
+tools/content-import/
+```
+
 First episode subset:
 
 ```text

@@ -48,6 +48,9 @@
     "initialState": {
       "$ref": "#/$defs/playerState"
     },
+    "metadata": {
+      "type": "object"
+    },
     "episodes": {
       "type": "array",
       "minItems": 1,

@@ -50,6 +50,7 @@ docs/game-engine/gamebook.schema.json
     "notes": "",
     "custom": {}
   },
+  "metadata": {},
   "episodes": [
     {
       "key": "1",
@@ -82,7 +83,20 @@ docs/game-engine/gamebook.schema.json
 - `accessLevel`: required string. MVP value for the first subset is `"public_anonymous"`.
 - `startEpisodeKey`: required string. Must point to an episode in `episodes`.
 - `initialState`: required object using the MVP player state shape.
+- `metadata`: optional object for import/curation notes. The engine must not require it for gameplay.
 - `episodes`: required non-empty array.
+
+## Curation Metadata
+
+Curated packages may include `metadata` to preserve source traceability without changing gameplay.
+
+Useful metadata fields:
+
+- `curationStrategy`: explains how the subset was prepared.
+- `sourcePdf`: source file name.
+- `selectedEpisodeKeys`: episode keys included in the package.
+- `omittedChoices`: choices intentionally left out because their targets are not included.
+- `unmodeledMechanics`: source mechanics kept as text but not represented as structured rules in MVP.
 
 ## Initial State Fields
 

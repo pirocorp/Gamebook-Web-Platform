@@ -1,0 +1,14 @@
+{
+  "name": "gamebook-content-import",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "pdf-to-text": "node src/pdf-to-text.mjs",
+    "extract-episodes": "node src/extract-episodes.mjs",
+    "build-gamebook": "node src/build-gamebook-package.mjs"
+  },
+  "dependencies": {
+    "pdfjs-dist": "^5.4.394"
+  }
+}
