@@ -35,6 +35,8 @@ Milestone 1 effects:
 - addMoney
 - setCurrentEpisode
 
+Ordinary choice navigation should use `targetEpisodeKey`; `setCurrentEpisode` is for special redirects.
+
 ## Player state
 
 The digital equivalent of the adventure diary.

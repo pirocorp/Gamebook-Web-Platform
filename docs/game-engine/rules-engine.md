@@ -40,3 +40,5 @@ Apply effects
   |
 Update SaveGame
 ```
+
+For ordinary choices, the selected choice's `targetEpisodeKey` determines the next episode. The `setCurrentEpisode` effect is reserved for special redirects.

@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gamebook.local/schemas/gamebook.schema.json",
+  "title": "Gamebook Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "formatVersion",
+    "slug",
+    "language",
+    "title",
+    "accessLevel",
+    "startEpisodeKey",
+    "initialState",
+    "episodes"
+  ],
+  "properties": {
+    "formatVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "slug": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "type": "string",
+      "minLength": 2
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "author": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "accessLevel": {
+      "type": "string",
+      "enum": ["public_anonymous"]
+    },
+    "startEpisodeKey": {
+      "type": "string",
+      "minLength": 1
+    },
+    "initialState": {
+      "$ref": "#/$defs/playerState"
+    },
+    "episodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/episode"
+      }
+    }
+  },
+  "$defs": {
+    "playerState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readerName",
+        "rating",
+        "money",
+        "items",
+        "skills",
+        "codeWords",
+        "notes",
+        "custom"
+      ],
+      "properties": {
+        "readerName": {
+          "type": "string"
+        },
+        "rating": {
+          "type": ["integer", "null"]
+        },
+        "money": {
+          "type": "integer"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "codeWords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "custom": {
+          "type": "object"
+        }
+      }
+    },
+    "episode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "originalText",
+        "displayText",
+        "choices"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "originalText": {
+          "type": "string"
+        },
+        "displayText": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/choice"
+          }
+        }
+      }
+    },
+    "choice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "originalLabel",
+        "displayLabel",
+        "targetEpisodeKey",
+        "conditions",
+        "effects"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "originalLabel": {
+          "type": "string"
+        },
+        "displayLabel": {
+          "type": "string"
+        },
+        "targetEpisodeKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conditions": {
+          "anyOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/condition" }
+          ]
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
+        }
+      }
+    },
+    "condition": {
+      "oneOf": [
+        { "$ref": "#/$defs/hasItemCondition" },
+        { "$ref": "#/$defs/hasSkillCondition" },
+        { "$ref": "#/$defs/hasCodeWordCondition" },
+        { "$ref": "#/$defs/missingCodeWordCondition" },
+        { "$ref": "#/$defs/moneyAtLeastCondition" },
+        { "$ref": "#/$defs/allCondition" },
+        { "$ref": "#/$defs/anyCondition" }
+      ]
+    },
+    "hasItemCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "item"],
+      "properties": {
+        "type": { "const": "hasItem" },
+        "item": { "type": "string", "minLength": 1 }
+      }
+    },
+    "hasSkillCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "skill"],
+      "properties": {
+        "type": { "const": "hasSkill" },
+        "skill": { "type": "string", "minLength": 1 }
+      }
+    },
+    "hasCodeWordCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "codeWord"],
+      "properties": {
+        "type": { "const": "hasCodeWord" },
+        "codeWord": { "type": "string", "minLength": 1 }
+      }
+    },
+    "missingCodeWordCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "codeWord"],
+      "properties": {
+        "type": { "const": "missingCodeWord" },
+        "codeWord": { "type": "string", "minLength": 1 }
+      }
+    },
+    "moneyAtLeastCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "amount"],
+      "properties": {
+        "type": { "const": "moneyAtLeast" },
+        "amount": { "type": "integer" }
+      }
+    },
+    "allCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "conditions"],
+      "properties": {
+        "type": { "const": "all" },
+        "conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/condition" }
+        }
+      }
+    },
+    "anyCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "conditions"],
+      "properties": {
+        "type": { "const": "any" },
+        "conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/condition" }
+        }
+      }
+    },
+    "effect": {
+      "oneOf": [
+        { "$ref": "#/$defs/addItemEffect" },
+        { "$ref": "#/$defs/removeItemEffect" },
+        { "$ref": "#/$defs/addCodeWordEffect" },
+        { "$ref": "#/$defs/removeMoneyEffect" },
+        { "$ref": "#/$defs/addMoneyEffect" },
+        { "$ref": "#/$defs/setCurrentEpisodeEffect" }
+      ]
+    },
+    "addItemEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "item"],
+      "properties": {
+        "type": { "const": "addItem" },
+        "item": { "type": "string", "minLength": 1 }
+      }
+    },
+    "removeItemEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "item"],
+      "properties": {
+        "type": { "const": "removeItem" },
+        "item": { "type": "string", "minLength": 1 }
+      }
+    },
+    "addCodeWordEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "codeWord"],
+      "properties": {
+        "type": { "const": "addCodeWord" },
+        "codeWord": { "type": "string", "minLength": 1 }
+      }
+    },
+    "removeMoneyEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "amount"],
+      "properties": {
+        "type": { "const": "removeMoney" },
+        "amount": { "type": "integer" }
+      }
+    },
+    "addMoneyEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "amount"],
+      "properties": {
+        "type": { "const": "addMoney" },
+        "amount": { "type": "integer" }
+      }
+    },
+    "setCurrentEpisodeEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "episodeKey"],
+      "properties": {
+        "type": { "const": "setCurrentEpisode" },
+        "episodeKey": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

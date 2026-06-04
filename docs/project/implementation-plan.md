@@ -231,7 +231,11 @@ Location:
 content/gamebooks/kotarakat-avreya/gamebook.json
 ```
 
+The package must follow `docs/game-engine/gamebook-format.md`.
+
 Use both `originalText` and `displayText`.
+
+Episode keys are strings. Conditions are `null` or one condition object. Effects are always arrays. Ordinary choice navigation uses `targetEpisodeKey`.
 
 First episode subset:
 
