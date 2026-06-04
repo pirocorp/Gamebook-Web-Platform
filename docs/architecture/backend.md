@@ -40,7 +40,7 @@ GameBook.Tests/
 ## Request Flow
 
 ```text
-HTTP Request
+HTTP API Request
       |
 Controller
       |
@@ -73,6 +73,7 @@ They must not:
 - access DbContext directly
 - contain domain workflows
 - apply choice effects directly
+- render public/auth Razor or MVC views in MVP
 
 ## Features
 
@@ -142,3 +143,7 @@ The same cookie authentication protects:
 API endpoints must return `401` or `403` for unauthorized requests, not redirect to login HTML.
 
 JWT bearer authentication is not part of MVP.
+
+## Frontend Integration
+
+The backend is API-first in MVP. Public and auth pages are implemented as Vite multipage frontend pages that call API endpoints.

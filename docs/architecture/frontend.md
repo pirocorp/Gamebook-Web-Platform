@@ -7,6 +7,11 @@
 - HTML
 - CSS
 - no frontend framework
+- API-first backend integration
+
+The frontend is a Vite multipage app. Public and auth pages are separate HTML entry points rendered by Vanilla TypeScript in the browser after loading data from backend API endpoints.
+
+ASP.NET Razor/MVC views are not used for MVP public or auth pages.
 
 ## Routing
 
@@ -18,6 +23,8 @@ Classic multipage-style navigation:
 /login
 /register
 ```
+
+Navigating between these pages is normal full-page browser navigation.
 
 SPA behavior only for:
 
@@ -32,6 +39,8 @@ Anonymous rule execution uses stateless backend endpoints. The frontend sends th
 ## Authentication
 
 Frontend does not store authentication tokens. Browser authentication uses HttpOnly cookies issued by ASP.NET Core Identity.
+
+Login and register pages are Vite multipage frontend pages. They submit credentials to auth API endpoints and rely on the browser-managed HttpOnly cookie returned by ASP.NET Core Identity.
 
 API calls should use:
 

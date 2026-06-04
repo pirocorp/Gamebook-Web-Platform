@@ -65,9 +65,12 @@ Goal: one subset of `Котаракът и Спасението на Аврея`
 
 ## Phase 5 — Deployment hardening
 
+[ ] Production hosting model
 [ ] Reverse proxy
 [ ] HTTPS
 [ ] Certificates
+[ ] Public CORS policy if needed
+[ ] CSRF protection
 [ ] Backups
 [ ] Logging
 [ ] Monitoring

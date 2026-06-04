@@ -6,16 +6,18 @@ Accepted
 
 ## Decision
 
-Use a hybrid routing approach.
+Use a hybrid Vite routing approach.
 
-Public areas behave like a classic multipage website.
+The backend remains API-first. Public and auth pages are Vite multipage HTML/TypeScript entry points that call backend API endpoints for data and actions.
+
+Public areas behave like a classic multipage website with full-page navigation.
 
 Examples:
 
 /books
 /books/book-slug
-/authors
-/admin
+/login
+/register
 
 
 Interactive areas behave as single page applications.
@@ -25,7 +27,7 @@ Examples:
 /play/{id}
 
 Admin:
-No SPA
+No SPA in MVP
 
 ## Reasons
 
@@ -33,3 +35,11 @@ No SPA
 - Better future SEO possibilities.
 - Game reader remains fast and app-like.
 - Fits future community platform goals.
+- Keeps MVP frontend implementation consistent with Vanilla TypeScript and Vite.
+
+## Consequences
+
+- Public and auth pages are not server-rendered ASP.NET Razor/MVC views in MVP.
+- The browser loads a separate HTML page for each public/auth route.
+- Each page uses TypeScript to call API endpoints and render page content.
+- `/play/{id}` is the only MVP route with SPA-style behavior after initial page load.

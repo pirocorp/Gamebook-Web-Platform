@@ -10,8 +10,10 @@ The project is designed as a generic gamebook engine, not as a hardcoded reader 
 - Domain: rich domain entities, aggregates, Clean Architecture boundaries
 - Database: PostgreSQL, JSONB, EF Core migrations
 - Authentication: ASP.NET Core Identity cookie authentication
-- Frontend: Vanilla TypeScript, Vite, HTML, CSS
-- Deployment: Docker Compose first
+- Frontend: Vanilla TypeScript, Vite multipage HTML/CSS, SPA behavior only for `/play`
+- Local development: Docker Compose supported
+
+The backend is API-first. Public and auth pages use classic full-page navigation through separate Vite HTML/TypeScript entry points. The game reader is the only MVP area that behaves like a single page application after it loads.
 
 ## Milestone 1
 
@@ -27,7 +29,7 @@ Milestone 1 focuses on a first playable vertical slice:
 - backend-owned game logic
 - seeded gamebook package from `content/gamebooks/`
 
-Admin editor, full book import, deployment hardening, password reset, email confirmation, and external login are out of scope for Milestone 1.
+Admin editor, full book import, production hosting, infrastructure hardening, CSRF protection, public CORS policy, password reset, email confirmation, and external login are out of scope for Milestone 1.
 
 ## Important docs
 

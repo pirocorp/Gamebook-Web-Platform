@@ -16,7 +16,7 @@ This folder contains project-level Architecture Decision Records (ADRs).
 | 0001 | Use PostgreSQL as the primary database | Accepted |
 | 0002 | Use ASP.NET Core for the backend | Accepted |
 | 0003 | Use Vanilla TypeScript and Vite for the frontend | Accepted |
-| 0004 | Use Docker Compose for local development and first deployment | Accepted |
+| 0004 | Use Docker Compose for local development | Accepted |
 | 0005 | Backend owns game logic | Accepted |
 | 0006 | Use JSONB for dynamic game data | Accepted |
 | 0007 | Support original text mode and interactive mode | Accepted |

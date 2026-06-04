@@ -5,7 +5,7 @@
 ```text
 Browser
   |
-Vanilla TypeScript + Vite frontend
+Vite multipage frontend
   |
 HTTP requests
   |
@@ -27,6 +27,8 @@ PostgreSQL
 ```
 
 The game engine is generic and data-driven. Gamebooks are imported from data packages under `content/gamebooks/` and are not hardcoded into the engine.
+
+The backend is API-first. Public and auth pages are Vite multipage HTML/TypeScript pages with classic full-page navigation. Only `/play/{gameId}` behaves like a single page application after the reader page loads.
 
 ## Backend projects
 

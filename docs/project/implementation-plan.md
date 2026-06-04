@@ -42,6 +42,8 @@ Frontend:
 - HTML
 - CSS
 - No React/Vue/Angular
+- API-first frontend integration
+- Vite multipage app for public and auth pages
 - Classic multipage-style public pages
 - Classic multipage-style auth pages
 - SPA behavior only for `/play`
@@ -58,8 +60,10 @@ Development:
 - PostgreSQL runs in Docker
 - API can run locally or in Docker
 - Frontend can run locally with Vite or in Docker
+- During local development, Vite serves frontend pages and calls the ASP.NET Core API
 - Day-to-day frontend development prefers local Vite for fast reload
-- CORS is not required for MVP
+- Local development should avoid CORS complexity by using a Vite dev proxy or another same-origin-style setup
+- Production hosting is out of scope for MVP
 
 Repository layout:
 
@@ -101,6 +105,9 @@ Excluded:
 - media upload UI
 - full book import
 - anonymous save to account migration
+- production hosting model
+- non-trivial infrastructure hardening
+- public CORS policy
 - CSRF protection for authenticated mutations
 - password reset
 - email confirmation
@@ -302,6 +309,8 @@ POST /api/auth/logout
 GET  /api/auth/me
 ```
 
+Auth pages are Vite multipage frontend pages that call these API endpoints. ASP.NET Identity manages users and issues the HttpOnly authentication cookie.
+
 Games:
 
 ```http
@@ -319,13 +328,20 @@ Anonymous saves are persisted in browser localStorage. Anonymous endpoints are s
 ## 12. Frontend Structure
 
 ```text
+frontend/
+  books.html
+  book-details.html
+  login.html
+  register.html
+  play.html
 frontend/src/
-  apps/
-    public/
-      books/
-      auth/
-    reader/
-      PlayApp.ts
+  pages/
+    books.ts
+    book-details.ts
+    login.ts
+    register.ts
+  reader/
+    play.ts
   shared/
     api/
     auth/
@@ -336,6 +352,8 @@ frontend/src/
 ```
 
 Public/auth pages use classic multipage-style navigation.
+
+Those pages are client-rendered by Vanilla TypeScript after loading their own HTML entry point. They call backend API endpoints for data and actions.
 
 The reader at `/play/{gameId}` has SPA behavior.
 
@@ -380,7 +398,7 @@ Do not store auth tokens in localStorage or sessionStorage.
 - configure cookie authentication
 - configure API unauthorized behavior to return 401/403
 - create register/login/logout/me slices
-- create frontend login/register pages
+- create Vite multipage frontend login/register pages that call auth API endpoints
 
 ### Milestone 1.5 — Import seed package
 
@@ -393,8 +411,8 @@ Do not store auth tokens in localStorage or sessionStorage.
 ### Milestone 1.6 — Public book pages
 
 - create books API
-- create `/books`
-- create `/books/{slug}`
+- create Vite multipage `/books`
+- create Vite multipage `/books/{slug}`
 - show book details and start button
 
 ### Milestone 1.7 — Game start and saves
@@ -465,12 +483,14 @@ Milestone 1 is complete when:
 
 - Implement a full Milestone 1 skeleton, but update documentation before writing application code.
 - Use `backend/` for .NET projects and `frontend/` for the Vite app; do not use root `src/` in MVP.
+- Use an API-first backend with a Vite multipage frontend. Public and auth pages are not server-rendered Razor/MVC pages in MVP.
+- Use classic full-page navigation for public/auth routes and SPA behavior only inside `/play/{gameId}`.
 - Anonymous `/play/{gameId}` uses a browser-only local save id stored in localStorage.
 - Anonymous game rule execution uses stateless backend endpoints so backend-owned game logic is preserved.
 - CSRF protection is out of scope for MVP and must be revisited before public exposure.
+- Production hosting and non-trivial infrastructure/security hardening are out of scope for MVP.
 - The curated gamebook subset content will be provided in the documented package format.
 
-## 17. Open Decisions Before Code
+## 17. Ready For Implementation
 
-- Development and production hosting model for API and frontend.
-- Auth page implementation style: frontend-rendered forms, Razor Pages, MVC views, or another explicit approach.
+There are no remaining open architecture decisions required before starting the Milestone 1 skeleton.
