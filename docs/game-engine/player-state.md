@@ -18,4 +18,4 @@ custom
 
 The state is represented by strongly typed C# objects and persisted as JSONB for saves and initial book state.
 
-Anonymous saves store equivalent state in browser localStorage.
+Anonymous saves store equivalent state in browser localStorage and are addressed by a browser-only local save id.

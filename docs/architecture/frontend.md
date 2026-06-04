@@ -25,6 +25,8 @@ SPA behavior only for:
 /play/{gameId}
 ```
 
+For anonymous games, `{gameId}` is a browser-only local save id stored in localStorage. It is not a server-side save id.
+
 ## Authentication
 
 Frontend does not store authentication tokens. Browser authentication uses HttpOnly cookies issued by ASP.NET Core Identity.

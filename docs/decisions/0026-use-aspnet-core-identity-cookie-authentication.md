@@ -78,6 +78,8 @@ HTTPS required
 
 ## CSRF
 
+CSRF protection is deferred from Milestone 1.
+
 Because authentication uses cookies, unsafe operations require CSRF protection before public exposure.
 
 Unsafe methods: POST, PUT, PATCH, DELETE.

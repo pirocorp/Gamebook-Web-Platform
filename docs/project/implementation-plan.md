@@ -84,6 +84,7 @@ Excluded:
 - media upload UI
 - full book import
 - anonymous save to account migration
+- CSRF protection for authenticated mutations
 - password reset
 - email confirmation
 - external login
@@ -246,6 +247,9 @@ Executable rule data should use strongly typed C# objects serialized to JSONB.
 Anonymous user:
 
 - save automatically to browser localStorage
+- start creates a browser-only local save id
+- `/play/{gameId}` uses that browser-only local save id for anonymous games
+- the anonymous local save id is not a server-side `SaveGame` id
 - no account required
 - limited to anonymous-accessible books
 
@@ -288,6 +292,8 @@ POST /api/games/{saveId}/choice
 ```
 
 Authenticated server-save endpoints use `[Authorize]`.
+
+Anonymous saves are persisted in browser localStorage. The exact API shape for applying backend-owned game rules to anonymous local saves is still an open implementation decision.
 
 ## 12. Frontend Structure
 
@@ -431,3 +437,17 @@ Milestone 1 is complete when:
 - Do not hardcode `Котаракът` logic into the engine.
 - Books are data.
 - Engine is generic.
+
+## 16. Clarified Implementation Decisions
+
+- Implement a full Milestone 1 skeleton, but update documentation before writing application code.
+- Anonymous `/play/{gameId}` uses a browser-only local save id stored in localStorage.
+- CSRF protection is out of scope for MVP and must be revisited before public exposure.
+- The curated gamebook subset content will be provided in the documented package format.
+
+## 17. Open Decisions Before Code
+
+- Final repository layout for the .NET solution and frontend.
+- Development and production hosting model for API and frontend.
+- Auth page implementation style: frontend-rendered forms, Razor Pages, MVC views, or another explicit approach.
+- Exact anonymous-save API flow that keeps backend-owned game logic while persisting anonymous saves in localStorage.

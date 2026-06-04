@@ -29,3 +29,5 @@ POST /api/games/{saveId}/choice
 ```
 
 Authenticated server-save endpoints use `[Authorize]`. API endpoints must return `401` or `403`, not HTML login redirects.
+
+Anonymous `/play/{gameId}` uses a browser-only local save id stored in localStorage. The exact API flow for applying backend-owned game rules to anonymous local saves is still open.

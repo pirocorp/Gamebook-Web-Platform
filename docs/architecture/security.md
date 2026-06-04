@@ -16,4 +16,6 @@ Protected API endpoints use `[Authorize]` and return `401` or `403` for API requ
 
 ## CSRF
 
-Because cookies authenticate unsafe requests, CSRF protection must be implemented before public exposure of authenticated mutations.
+CSRF protection for authenticated mutations is out of scope for Milestone 1.
+
+Because cookies authenticate unsafe requests, CSRF protection must be implemented before public exposure.
