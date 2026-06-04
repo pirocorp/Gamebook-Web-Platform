@@ -4,9 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "pdf-to-text": "node src/pdf-to-text.mjs",
-    "extract-episodes": "node src/extract-episodes.mjs",
-    "build-gamebook": "node src/build-gamebook-package.mjs"
+    "pdf-to-text": "node --experimental-strip-types src/pdf-to-text.ts",
+    "extract-episodes": "node --experimental-strip-types src/extract-episodes.ts",
+    "build-gamebook": "node --experimental-strip-types src/build-gamebook-package.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "pdfjs-dist": "^5.4.394"

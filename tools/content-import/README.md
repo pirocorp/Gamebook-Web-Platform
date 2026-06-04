@@ -21,13 +21,17 @@ The current workflow supports:
 Files:
 
 - `package.json`: tool scripts and dependency declaration
-- `src/pdf-to-text.mjs`: extracts PDF text into a line-based text file
-- `src/extract-episodes.mjs`: extracts configured episode ranges from the text dump
-- `src/build-gamebook-package.mjs`: builds `content/gamebooks/{slug}/gamebook.json`
-- `src/args.mjs`: command-line argument parsing helpers
-- `src/io.mjs`: shared file and JSON helpers
-- `src/paths.mjs`: repo-relative path resolution
-- `src/text.mjs`: line-range and source-text cleanup helpers
+- `src/pdf-to-text.ts`: extracts PDF text into a line-based text file
+- `src/extract-episodes.ts`: extracts configured episode ranges from the text dump
+- `src/build-gamebook-package.ts`: builds `content/gamebooks/{slug}/gamebook.json`
+- `src/args.ts`: command-line argument parsing helpers
+- `src/io.ts`: shared file and JSON helpers
+- `src/paths.ts`: repo-relative path resolution
+- `src/text.ts`: line-range and source-text cleanup helpers
+- `src/types.ts`: shared TypeScript models for the import pipeline
+
+The scripts run directly in Node via `--experimental-strip-types`, so the tool stays fully typed without adding a separate compile step.
+Static type checking still runs through `tsc` via the `typecheck` script.
 
 ### Inputs And Outputs
 
@@ -93,13 +97,13 @@ content/source/{book-slug}/
 Example:
 
 ```text
-content/source/kotarakat-avreya/Ал Торо - Котаракът и Спасението на Аврея (IPDF).pdf
+content/source/kotarakat-avreya/{source-pdf-name}.pdf
 ```
 
 ### 3. Extract PDF Text
 
 ```powershell
-npm.cmd --prefix tools/content-import run pdf-to-text -- --source "content/source/kotarakat-avreya/Ал Торо - Котаракът и Спасението на Аврея (IPDF).pdf" --out content/source/kotarakat-avreya/kotarakat-avreya-text.txt
+npm.cmd --prefix tools/content-import run pdf-to-text -- --source "content/source/kotarakat-avreya/{source-pdf-name}.pdf" --out content/source/kotarakat-avreya/kotarakat-avreya-text.txt
 ```
 
 Expected result:
@@ -149,6 +153,7 @@ content/gamebooks/kotarakat-avreya/gamebook.json
 
 Minimum checks:
 
+- run `npm.cmd --prefix tools/content-import run typecheck`
 - open the generated JSON and confirm it parses
 - confirm all `choices[].targetEpisodeKey` values point to included episodes when building a curated playable slice
 - confirm omitted source choices are recorded in metadata when using curated subsets
