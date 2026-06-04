@@ -61,6 +61,23 @@ Development:
 - Day-to-day frontend development prefers local Vite for fast reload
 - CORS is not required for MVP
 
+Repository layout:
+
+```text
+Gamebook-Web-Platform/
+  GameBook.WebPlatform.sln
+  backend/
+    GameBook.Api/
+    GameBook.Core/
+    GameBook.Data/
+    GameBook.Tests/
+  frontend/
+  content/
+  docs/
+```
+
+The root `src/` directory is not used in MVP.
+
 ## 3. Milestone 1 Scope
 
 Included:
@@ -250,6 +267,8 @@ Anonymous user:
 - start creates a browser-only local save id
 - `/play/{gameId}` uses that browser-only local save id for anonymous games
 - the anonymous local save id is not a server-side `SaveGame` id
+- backend still validates choices and applies rules through stateless anonymous game endpoints
+- browser sends the current anonymous state to the backend and stores the returned updated state
 - no account required
 - limited to anonymous-accessible books
 
@@ -289,11 +308,13 @@ Games:
 POST /api/games/start
 GET  /api/games/{saveId}
 POST /api/games/{saveId}/choice
+POST /api/games/anonymous/start
+POST /api/games/anonymous/choice
 ```
 
 Authenticated server-save endpoints use `[Authorize]`.
 
-Anonymous saves are persisted in browser localStorage. The exact API shape for applying backend-owned game rules to anonymous local saves is still an open implementation decision.
+Anonymous saves are persisted in browser localStorage. Anonymous endpoints are stateless: the frontend sends the current local save state, the backend validates choices and applies rules, and the frontend stores the updated state returned by the backend.
 
 ## 12. Frontend Structure
 
@@ -379,6 +400,7 @@ Do not store auth tokens in localStorage or sessionStorage.
 ### Milestone 1.7 — Game start and saves
 
 - create `StartGame` feature
+- create anonymous stateless start endpoint
 - anonymous start creates local save
 - authenticated start creates PostgreSQL save
 - create `LocalSaveProvider` and `ServerSaveProvider`
@@ -387,6 +409,7 @@ Do not store auth tokens in localStorage or sessionStorage.
 
 - create GameEngine, RulesEngine, EffectsEngine
 - create GetGameState and ExecuteChoice features
+- create anonymous stateless ExecuteChoice flow
 - render episode, diary, and available choices
 - apply effects and persist state
 
@@ -441,13 +464,13 @@ Milestone 1 is complete when:
 ## 16. Clarified Implementation Decisions
 
 - Implement a full Milestone 1 skeleton, but update documentation before writing application code.
+- Use `backend/` for .NET projects and `frontend/` for the Vite app; do not use root `src/` in MVP.
 - Anonymous `/play/{gameId}` uses a browser-only local save id stored in localStorage.
+- Anonymous game rule execution uses stateless backend endpoints so backend-owned game logic is preserved.
 - CSRF protection is out of scope for MVP and must be revisited before public exposure.
 - The curated gamebook subset content will be provided in the documented package format.
 
 ## 17. Open Decisions Before Code
 
-- Final repository layout for the .NET solution and frontend.
 - Development and production hosting model for API and frontend.
 - Auth page implementation style: frontend-rendered forms, Razor Pages, MVC views, or another explicit approach.
-- Exact anonymous-save API flow that keeps backend-owned game logic while persisting anonymous saves in localStorage.

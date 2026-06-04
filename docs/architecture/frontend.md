@@ -27,6 +27,8 @@ SPA behavior only for:
 
 For anonymous games, `{gameId}` is a browser-only local save id stored in localStorage. It is not a server-side save id.
 
+Anonymous rule execution uses stateless backend endpoints. The frontend sends the current local save state and stores the updated state returned by the backend.
+
 ## Authentication
 
 Frontend does not store authentication tokens. Browser authentication uses HttpOnly cookies issued by ASP.NET Core Identity.

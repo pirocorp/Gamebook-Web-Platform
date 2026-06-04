@@ -26,8 +26,12 @@ Authentication uses ASP.NET Core Identity cookies. The API does not use JWT bear
 POST /api/games/start
 GET  /api/games/{saveId}
 POST /api/games/{saveId}/choice
+POST /api/games/anonymous/start
+POST /api/games/anonymous/choice
 ```
 
 Authenticated server-save endpoints use `[Authorize]`. API endpoints must return `401` or `403`, not HTML login redirects.
 
-Anonymous `/play/{gameId}` uses a browser-only local save id stored in localStorage. The exact API flow for applying backend-owned game rules to anonymous local saves is still open.
+Anonymous `/play/{gameId}` uses a browser-only local save id stored in localStorage.
+
+Anonymous endpoints are stateless. The frontend sends the current local save state, the backend validates choices and applies rules, and the frontend stores the updated state returned by the backend.
