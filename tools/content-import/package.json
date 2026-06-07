@@ -7,6 +7,7 @@
     "pdf-to-text": "node --experimental-strip-types src/pdf-to-text.ts",
     "extract-episodes": "node --experimental-strip-types src/extract-episodes.ts",
     "build-gamebook": "node --experimental-strip-types src/build-gamebook-package.ts",
+    "test": "node --experimental-strip-types --test test/*.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {

@@ -1,4 +1,7 @@
 import {
+  extractConfiguredEpisodes
+} from "./import-workflow.ts";
+import {
   parseCommandLineArguments,
   requireCommandLineArgument
 } from "./args.ts";
@@ -7,25 +10,7 @@ import {
   resolveRepositoryInputPath,
   resolveRepositoryOutputPath
 } from "./paths.ts";
-import { extractTextBlockByLineRange } from "./text.ts";
 import type { ExtractedEpisode, GamebookImportConfig } from "./types.ts";
-
-function extractConfiguredEpisodes(
-  gamebookImportConfig: GamebookImportConfig,
-  sourceTextLines: string[]
-): ExtractedEpisode[] {
-  return gamebookImportConfig.episodes.map((episodeImportConfig) => ({
-    key: episodeImportConfig.key,
-    sourceLineStart: episodeImportConfig.sourceLineStart,
-    sourceLineEnd: episodeImportConfig.sourceLineEnd,
-    text: extractTextBlockByLineRange(
-      sourceTextLines,
-      episodeImportConfig.sourceLineStart,
-      episodeImportConfig.sourceLineEnd,
-      `Episode ${episodeImportConfig.key}`
-    )
-  }));
-}
 
 function main(): void {
   const commandLineArguments = parseCommandLineArguments(process.argv.slice(2));
