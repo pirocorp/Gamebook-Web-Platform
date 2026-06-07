@@ -35,6 +35,15 @@ The current implementation pass uses these concrete choices:
 - expose the API container on `http://localhost:8080`
 - postpone ASP.NET Core Identity implementation to the next vertical slice
 
+### Verification Rule
+
+Before considering backend work done, verify it in this order:
+
+1. `build`
+2. `test`
+3. `run`
+4. hit the actual endpoint(s)
+
 ### Project Structure
 
 Files and folders:
@@ -101,6 +110,7 @@ Expected result:
 
 - PostgreSQL starts on `localhost:5432`
 - the API starts on `http://localhost:8080`
+- the API docs UI is available at `http://localhost:8080/scalar`
 
 ### 2. Build The Backend Locally
 
@@ -134,6 +144,7 @@ backend/GameBook.Api/GameBook.Api.http
 Or call the basic endpoints directly:
 
 ```powershell
+curl http://localhost:8080/scalar
 curl http://localhost:8080/api/health
 curl http://localhost:8080/api/books
 ```

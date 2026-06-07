@@ -7,6 +7,15 @@ application.
 This runbook covers the main project runtime, not the offline content import
 utility.
 
+## Verification Rule
+
+Before considering backend work done, verify it in this order:
+
+1. `build`
+2. `test`
+3. `run`
+4. hit the actual endpoint(s)
+
 ## Directory Model
 
 Primary runtime code lives under:
@@ -122,6 +131,7 @@ localhost:5432
 
 Current manual verification endpoints:
 
+- `GET /scalar`
 - `GET /api/health`
 - `GET /api/books`
 - `GET /api/books/{slug}`
