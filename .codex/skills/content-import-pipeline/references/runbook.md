@@ -99,6 +99,12 @@ Type-check the utility:
 npm.cmd --prefix tools/content-import run typecheck
 ```
 
+Run the utility tests:
+
+```powershell
+npm.cmd --prefix tools/content-import run test
+```
+
 ## Validation Checklist
 
 - Confirm the selected config file matches the intended book slug and language.
@@ -109,6 +115,9 @@ npm.cmd --prefix tools/content-import run typecheck
 - Confirm subset configs record omitted source-faithful choices where needed.
 - Confirm notes about unmodeled mechanics remain in metadata instead of disappearing during regeneration.
 - Confirm generated `gamebook.json` is the output of the build step, not hand-edited drift.
+- When tool code changed, run both `typecheck` and `test` and require both to pass.
+- If behavior changed intentionally, update or extend tests so they verify the new expected behavior.
+- Treat unexpected test failures as regressions until the code or the expectation is clarified.
 
 ## Troubleshooting Heuristics
 

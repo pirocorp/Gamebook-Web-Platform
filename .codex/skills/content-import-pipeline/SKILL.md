@@ -48,6 +48,9 @@ See [references/runbook.md](references/runbook.md) for the exact commands and th
 - Preserve source traceability. Do not remove page markers or source line provenance without an explicit reason.
 - Treat the backend as authoritative for play logic. This utility prepares content; it does not decide runtime game rules.
 - Keep changes repo-relative and documented in the utility README when the workflow changes.
+- When changing the tool code, run `npm.cmd --prefix tools/content-import run typecheck` and `npm.cmd --prefix tools/content-import run test`, and require both to pass.
+- If tool behavior changes intentionally, update or extend the tests to reflect the new expected behavior.
+- Do not change tests only to force a pass unless the intended behavior has actually changed.
 
 ## Use This Skill When
 
