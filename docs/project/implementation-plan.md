@@ -510,3 +510,24 @@ Milestone 1 is complete when:
 ## 17. Ready For Implementation
 
 There are no remaining open architecture decisions required before starting the Milestone 1 skeleton.
+
+## 18. Current Implementation Baseline
+
+The current implementation pass uses these concrete choices:
+
+- target `.NET 10`
+- use `xUnit` for `GameBook.Tests`
+- use `MediatR` under the available Community license
+- start local infrastructure with Docker Compose from the first backend step
+- postpone ASP.NET Core Identity implementation to the next vertical slice after the backend foundation is in place
+- implement the backend skeleton together with the first public endpoint scaffold in this pass
+
+This baseline does not change the accepted long-term MVP architecture.
+
+It only changes the execution order of the first implementation slices:
+
+1. solution and project skeleton
+2. containerized PostgreSQL and backend configuration
+3. first public endpoint scaffold
+4. Identity slice
+5. remaining game and reader slices

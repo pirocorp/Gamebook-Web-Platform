@@ -12,6 +12,11 @@
 
 Goal: one subset of `Котаракът и Спасението на Аврея` playable end-to-end.
 
+- target `.NET 10`
+- use `xUnit`
+- wire Docker Compose from the first backend step
+- build the backend skeleton and first public endpoint scaffold before the Identity slice
+
 [ ] ASP.NET Core solution
 [ ] Vite frontend
 [ ] PostgreSQL Docker service

@@ -1,0 +1,15 @@
+@GameBook.Api_HostAddress = http://localhost:5019
+
+### API health
+GET {{GameBook.Api_HostAddress}}/api/health
+Accept: application/json
+
+### List books
+GET {{GameBook.Api_HostAddress}}/api/books
+Accept: application/json
+
+### Get missing book
+GET {{GameBook.Api_HostAddress}}/api/books/missing-book
+Accept: application/json
+
+###

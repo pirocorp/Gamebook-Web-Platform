@@ -1,1 +1,21 @@
 
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gamebook-postgres
+    environment:
+      POSTGRES_DB: gamebook
+      POSTGRES_USER: gamebook
+      POSTGRES_PASSWORD: gamebook
+    ports:
+      - "5432:5432"
+    volumes:
+      - gamebook-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gamebook -d gamebook"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  gamebook-postgres-data:

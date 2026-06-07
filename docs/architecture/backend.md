@@ -11,6 +11,19 @@
 - PostgreSQL
 - ASP.NET Core Identity cookie authentication
 
+## Current Implementation Baseline
+
+The active backend implementation baseline is:
+
+- `.NET 10`
+- `xUnit` for automated tests
+- `MediatR` with the available Community license
+- Docker Compose from the first backend setup step
+
+Identity cookie authentication remains the target MVP authentication model, but
+its implementation is intentionally deferred until the next vertical slice after
+the backend foundation and first public endpoint scaffold are in place.
+
 ## Structure
 
 ```text
