@@ -26,7 +26,7 @@ export interface OmittedChoiceNote {
   reason: string;
 }
 
-export interface CuratedEpisodeConfig {
+export interface GamebookEpisodeImportConfig {
   key: string;
   sourceLineStart: number;
   sourceLineEnd: number;
@@ -80,7 +80,7 @@ export interface GamebookImportConfig {
   package: GamebookPackageConfig;
   initialState: PlayerStateConfig;
   metadata?: GamebookPackageMetadata;
-  episodes: CuratedEpisodeConfig[];
+  episodes: GamebookEpisodeImportConfig[];
 }
 
 export interface ExtractedEpisode {

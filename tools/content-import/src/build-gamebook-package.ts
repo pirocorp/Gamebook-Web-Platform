@@ -3,7 +3,7 @@ import { readJsonFile, readTextFileLines, writeJsonFile } from "./io.ts";
 import { resolveRepositoryInputPath, resolveRepositoryOutputPath } from "./paths.ts";
 import { extractTextBlockByLineRange, normalizeEpisodeSourceText } from "./text.ts";
 import type {
-  CuratedEpisodeConfig,
+  GamebookEpisodeImportConfig,
   GamebookImportConfig,
   GamebookEpisode,
   GamebookPackage,
@@ -37,22 +37,22 @@ function validateGamebookImportConfig(gamebookImportConfig: GamebookImportConfig
 }
 
 function buildGamebookEpisode(
-  curatedEpisodeConfig: CuratedEpisodeConfig,
+  episodeImportConfig: GamebookEpisodeImportConfig,
   sourceTextLines: string[]
 ): GamebookEpisode {
   const sourceTextBlock = extractTextBlockByLineRange(
     sourceTextLines,
-    curatedEpisodeConfig.sourceLineStart,
-    curatedEpisodeConfig.sourceLineEnd,
-    `Episode ${curatedEpisodeConfig.key}`
+    episodeImportConfig.sourceLineStart,
+    episodeImportConfig.sourceLineEnd,
+    `Episode ${episodeImportConfig.key}`
   );
 
   return {
-    key: curatedEpisodeConfig.key,
-    title: `Episode ${curatedEpisodeConfig.key}`,
-    originalText: normalizeEpisodeSourceText(sourceTextBlock, curatedEpisodeConfig.key),
-    displayText: curatedEpisodeConfig.displayText,
-    choices: curatedEpisodeConfig.choices ?? []
+    key: episodeImportConfig.key,
+    title: `Episode ${episodeImportConfig.key}`,
+    originalText: normalizeEpisodeSourceText(sourceTextBlock, episodeImportConfig.key),
+    displayText: episodeImportConfig.displayText,
+    choices: episodeImportConfig.choices ?? []
   };
 }
 
@@ -61,13 +61,13 @@ function collectOmittedChoiceMetadata(
 ): Array<{ episodeKey: string; choices: OmittedChoiceNote[] }> {
   return gamebookImportConfig.episodes
     .filter(
-      (curatedEpisodeConfig) =>
-        Array.isArray(curatedEpisodeConfig.omittedChoices) &&
-        curatedEpisodeConfig.omittedChoices.length > 0
+      (episodeImportConfig) =>
+        Array.isArray(episodeImportConfig.omittedChoices) &&
+        episodeImportConfig.omittedChoices.length > 0
     )
-    .map((curatedEpisodeConfig) => ({
-      episodeKey: curatedEpisodeConfig.key,
-      choices: curatedEpisodeConfig.omittedChoices ?? []
+    .map((episodeImportConfig) => ({
+      episodeKey: episodeImportConfig.key,
+      choices: episodeImportConfig.omittedChoices ?? []
     }));
 }
 
@@ -76,13 +76,13 @@ function collectUnmodeledMechanicMetadata(
 ): Array<{ episodeKey: string; notes: string[] }> {
   return gamebookImportConfig.episodes
     .filter(
-      (curatedEpisodeConfig) =>
-        Array.isArray(curatedEpisodeConfig.unmodeledMechanics) &&
-        curatedEpisodeConfig.unmodeledMechanics.length > 0
+      (episodeImportConfig) =>
+        Array.isArray(episodeImportConfig.unmodeledMechanics) &&
+        episodeImportConfig.unmodeledMechanics.length > 0
     )
-    .map((curatedEpisodeConfig) => ({
-      episodeKey: curatedEpisodeConfig.key,
-      notes: curatedEpisodeConfig.unmodeledMechanics ?? []
+    .map((episodeImportConfig) => ({
+      episodeKey: episodeImportConfig.key,
+      notes: episodeImportConfig.unmodeledMechanics ?? []
     }));
 }
 
@@ -98,8 +98,8 @@ function buildGamebookPackage(
       omittedChoices: collectOmittedChoiceMetadata(gamebookImportConfig),
       unmodeledMechanics: collectUnmodeledMechanicMetadata(gamebookImportConfig)
     },
-    episodes: gamebookImportConfig.episodes.map((curatedEpisodeConfig) =>
-      buildGamebookEpisode(curatedEpisodeConfig, sourceTextLines)
+    episodes: gamebookImportConfig.episodes.map((episodeImportConfig) =>
+      buildGamebookEpisode(episodeImportConfig, sourceTextLines)
     )
   };
 }

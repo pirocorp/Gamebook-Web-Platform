@@ -14,15 +14,15 @@ function extractConfiguredEpisodes(
   gamebookImportConfig: GamebookImportConfig,
   sourceTextLines: string[]
 ): ExtractedEpisode[] {
-  return gamebookImportConfig.episodes.map((curatedEpisodeConfig) => ({
-    key: curatedEpisodeConfig.key,
-    sourceLineStart: curatedEpisodeConfig.sourceLineStart,
-    sourceLineEnd: curatedEpisodeConfig.sourceLineEnd,
+  return gamebookImportConfig.episodes.map((episodeImportConfig) => ({
+    key: episodeImportConfig.key,
+    sourceLineStart: episodeImportConfig.sourceLineStart,
+    sourceLineEnd: episodeImportConfig.sourceLineEnd,
     text: extractTextBlockByLineRange(
       sourceTextLines,
-      curatedEpisodeConfig.sourceLineStart,
-      curatedEpisodeConfig.sourceLineEnd,
-      `Episode ${curatedEpisodeConfig.key}`
+      episodeImportConfig.sourceLineStart,
+      episodeImportConfig.sourceLineEnd,
+      `Episode ${episodeImportConfig.key}`
     )
   }));
 }
