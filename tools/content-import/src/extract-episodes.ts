@@ -8,13 +8,13 @@ import {
   resolveRepositoryOutputPath
 } from "./paths.ts";
 import { extractTextBlockByLineRange } from "./text.ts";
-import type { CuratedSubsetConfig, ExtractedEpisode } from "./types.ts";
+import type { ExtractedEpisode, GamebookImportConfig } from "./types.ts";
 
 function extractConfiguredEpisodes(
-  curatedSubsetConfig: CuratedSubsetConfig,
+  gamebookImportConfig: GamebookImportConfig,
   sourceTextLines: string[]
 ): ExtractedEpisode[] {
-  return curatedSubsetConfig.episodes.map((curatedEpisodeConfig) => ({
+  return gamebookImportConfig.episodes.map((curatedEpisodeConfig) => ({
     key: curatedEpisodeConfig.key,
     sourceLineStart: curatedEpisodeConfig.sourceLineStart,
     sourceLineEnd: curatedEpisodeConfig.sourceLineEnd,
@@ -29,20 +29,20 @@ function extractConfiguredEpisodes(
 
 function main(): void {
   const commandLineArguments = parseCommandLineArguments(process.argv.slice(2));
-  const curationConfigPath = resolveRepositoryInputPath(
+  const importConfigPath = resolveRepositoryInputPath(
     requireCommandLineArgument(commandLineArguments, "config")
   );
   const outputJsonPath = resolveRepositoryOutputPath(
     requireCommandLineArgument(commandLineArguments, "out")
   );
 
-  const curatedSubsetConfig = readJsonFile<CuratedSubsetConfig>(
-    curationConfigPath,
-    "curation config"
+  const gamebookImportConfig = readJsonFile<GamebookImportConfig>(
+    importConfigPath,
+    "import config"
   );
-  const sourceTextPath = resolveRepositoryInputPath(curatedSubsetConfig.sourceTextPath);
+  const sourceTextPath = resolveRepositoryInputPath(gamebookImportConfig.sourceTextPath);
   const sourceTextLines = readTextFileLines(sourceTextPath, "source text");
-  const extractedEpisodes = extractConfiguredEpisodes(curatedSubsetConfig, sourceTextLines);
+  const extractedEpisodes = extractConfiguredEpisodes(gamebookImportConfig, sourceTextLines);
 
   writeJsonFile(outputJsonPath, extractedEpisodes);
 

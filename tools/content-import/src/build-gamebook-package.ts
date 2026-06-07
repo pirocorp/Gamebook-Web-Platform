@@ -4,7 +4,7 @@ import { resolveRepositoryInputPath, resolveRepositoryOutputPath } from "./paths
 import { extractTextBlockByLineRange, normalizeEpisodeSourceText } from "./text.ts";
 import type {
   CuratedEpisodeConfig,
-  CuratedSubsetConfig,
+  GamebookImportConfig,
   GamebookEpisode,
   GamebookPackage,
   OmittedChoiceNote
@@ -22,17 +22,17 @@ function assertIsArray(value: unknown, fieldLabel: string): void {
   }
 }
 
-function validateCuratedSubsetConfig(curatedSubsetConfig: CuratedSubsetConfig): void {
-  assertIsObjectRecord(curatedSubsetConfig.package, "a package object");
-  assertIsObjectRecord(curatedSubsetConfig.initialState, "an initialState object");
-  assertIsArray(curatedSubsetConfig.episodes, "an episodes array");
+function validateGamebookImportConfig(gamebookImportConfig: GamebookImportConfig): void {
+  assertIsObjectRecord(gamebookImportConfig.package, "a package object");
+  assertIsObjectRecord(gamebookImportConfig.initialState, "an initialState object");
+  assertIsArray(gamebookImportConfig.episodes, "an episodes array");
 
-  if (!curatedSubsetConfig.sourceTextPath) {
-    throw new Error("Curation config must contain sourceTextPath.");
+  if (!gamebookImportConfig.sourceTextPath) {
+    throw new Error("Import config must contain sourceTextPath.");
   }
 
-  if (!curatedSubsetConfig.outputPath) {
-    throw new Error("Curation config must contain outputPath.");
+  if (!gamebookImportConfig.outputPath) {
+    throw new Error("Import config must contain outputPath.");
   }
 }
 
@@ -57,9 +57,9 @@ function buildGamebookEpisode(
 }
 
 function collectOmittedChoiceMetadata(
-  curatedSubsetConfig: CuratedSubsetConfig
+  gamebookImportConfig: GamebookImportConfig
 ): Array<{ episodeKey: string; choices: OmittedChoiceNote[] }> {
-  return curatedSubsetConfig.episodes
+  return gamebookImportConfig.episodes
     .filter(
       (curatedEpisodeConfig) =>
         Array.isArray(curatedEpisodeConfig.omittedChoices) &&
@@ -72,9 +72,9 @@ function collectOmittedChoiceMetadata(
 }
 
 function collectUnmodeledMechanicMetadata(
-  curatedSubsetConfig: CuratedSubsetConfig
+  gamebookImportConfig: GamebookImportConfig
 ): Array<{ episodeKey: string; notes: string[] }> {
-  return curatedSubsetConfig.episodes
+  return gamebookImportConfig.episodes
     .filter(
       (curatedEpisodeConfig) =>
         Array.isArray(curatedEpisodeConfig.unmodeledMechanics) &&
@@ -87,18 +87,18 @@ function collectUnmodeledMechanicMetadata(
 }
 
 function buildGamebookPackage(
-  curatedSubsetConfig: CuratedSubsetConfig,
+  gamebookImportConfig: GamebookImportConfig,
   sourceTextLines: string[]
 ): GamebookPackage {
   return {
-    ...curatedSubsetConfig.package,
-    initialState: curatedSubsetConfig.initialState,
+    ...gamebookImportConfig.package,
+    initialState: gamebookImportConfig.initialState,
     metadata: {
-      ...curatedSubsetConfig.metadata,
-      omittedChoices: collectOmittedChoiceMetadata(curatedSubsetConfig),
-      unmodeledMechanics: collectUnmodeledMechanicMetadata(curatedSubsetConfig)
+      ...gamebookImportConfig.metadata,
+      omittedChoices: collectOmittedChoiceMetadata(gamebookImportConfig),
+      unmodeledMechanics: collectUnmodeledMechanicMetadata(gamebookImportConfig)
     },
-    episodes: curatedSubsetConfig.episodes.map((curatedEpisodeConfig) =>
+    episodes: gamebookImportConfig.episodes.map((curatedEpisodeConfig) =>
       buildGamebookEpisode(curatedEpisodeConfig, sourceTextLines)
     )
   };
@@ -106,20 +106,20 @@ function buildGamebookPackage(
 
 function main(): void {
   const commandLineArguments = parseCommandLineArguments(process.argv.slice(2));
-  const curationConfigPath = resolveRepositoryInputPath(
+  const importConfigPath = resolveRepositoryInputPath(
     requireCommandLineArgument(commandLineArguments, "config")
   );
 
-  const curatedSubsetConfig = readJsonFile<CuratedSubsetConfig>(
-    curationConfigPath,
-    "curation config"
+  const gamebookImportConfig = readJsonFile<GamebookImportConfig>(
+    importConfigPath,
+    "import config"
   );
-  validateCuratedSubsetConfig(curatedSubsetConfig);
+  validateGamebookImportConfig(gamebookImportConfig);
 
-  const sourceTextPath = resolveRepositoryInputPath(curatedSubsetConfig.sourceTextPath);
-  const outputPackagePath = resolveRepositoryOutputPath(curatedSubsetConfig.outputPath);
+  const sourceTextPath = resolveRepositoryInputPath(gamebookImportConfig.sourceTextPath);
+  const outputPackagePath = resolveRepositoryOutputPath(gamebookImportConfig.outputPath);
   const sourceTextLines = readTextFileLines(sourceTextPath, "source text");
-  const gamebookPackage = buildGamebookPackage(curatedSubsetConfig, sourceTextLines);
+  const gamebookPackage = buildGamebookPackage(gamebookImportConfig, sourceTextLines);
 
   writeJsonFile(outputPackagePath, gamebookPackage);
 

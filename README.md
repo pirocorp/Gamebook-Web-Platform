@@ -21,6 +21,8 @@ The backend is API-first. Public and auth pages use classic full-page navigation
 
 It is not part of the runtime web app. When working on backend or frontend application features, prefer staying within the app code unless the task explicitly involves content import, generated package troubleshooting, or updates to the utility itself.
 
+The utility defaults to full-book imports where the config includes every episode, and also supports curated subset imports for MVP slices when intentionally needed.
+
 ## Milestone 1
 
 Milestone 1 focuses on a first playable vertical slice:

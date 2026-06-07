@@ -1,6 +1,6 @@
 ---
 name: content-import-pipeline
-description: Guide the repository-specific content import utility, an offline authoring and packaging workflow that prepares engine-ready `gamebook.json` files and is not part of the main runtime app. Use when Codex needs to import or update a gamebook slice, run or troubleshoot `tools/content-import`, edit `curated-subset.json`, validate extracted episode ranges, verify generated choice targets, or keep the import tool and its documentation aligned with this repo's content rules.
+description: Guide the repository-specific content import utility, an offline authoring and packaging workflow that prepares engine-ready `gamebook.json` files and is not part of the main runtime app. Use when Codex needs to import or update a full book or a gamebook slice, run or troubleshoot `tools/content-import`, edit import config files such as `book-config.json`, `curated-full.json`, or `curated-subset.json`, validate extracted episode ranges, verify generated choice targets, or keep the import tool and its documentation aligned with this repo's content rules.
 ---
 
 # Content Import Pipeline
@@ -11,22 +11,33 @@ Treat the utility as a content-packaging pipeline, not as game-engine logic. Kee
 
 Treat code under `tools/content-import/` as offline developer tooling rather than backend or frontend runtime code.
 
+Treat full-book import as the default workflow.
+
+Use subset import only when the user explicitly wants a limited playable slice.
+
+The same pipeline supports both:
+- full-book imports where the config includes every episode
+- curated subset imports for vertical slices
+
 ## Follow This Workflow
 
-1. Read `tools/content-import/README.md` and the relevant curation file before changing anything.
+1. Read `tools/content-import/README.md` and the relevant config file before changing anything.
 2. Confirm which book slug is being worked on and use repo-relative paths from the repository root.
-3. Identify which step is needed:
+3. Confirm which import mode is intended:
+   - full-book curation for the complete book
+   - subset curation for a playable slice
+4. Identify which step is needed:
    - `pdf-to-text` for a fresh or updated PDF text dump
    - `extract-episodes` for auditing selected source ranges
    - `build-gamebook` for generating the final `gamebook.json`
    - `typecheck` for validating the TypeScript tool itself
-4. Preserve the distinction between source artifacts and generated outputs:
+5. Preserve the distinction between source artifacts and generated outputs:
    - source assets and curation live under `content/source/{book-slug}/`
    - final playable package lives under `content/gamebooks/{book-slug}/gamebook.json`
-5. Validate the result before finishing:
+6. Validate the result before finishing:
    - confirm the generated JSON is structurally sane
-   - confirm curated choices target included episode keys
-   - confirm omitted source choices and unmodeled mechanics remain documented when relevant
+   - confirm choices target included episode keys
+   - confirm subset-specific omissions remain documented when relevant
 
 See [references/runbook.md](references/runbook.md) for the exact commands and the detailed validation checklist.
 
@@ -40,8 +51,10 @@ See [references/runbook.md](references/runbook.md) for the exact commands and th
 
 ## Use This Skill When
 
+- A user asks to prepare a complete book package rather than only a subset.
 - A user asks to import a new vertical slice from a source PDF.
 - A curated subset needs episode boundaries, display text, or playable choices adjusted.
+- A full-book config needs episode boundaries, display text, or playable choices adjusted.
 - `gamebook.json` must be regenerated after content curation changes.
 - The TypeScript import tool must be updated, type-checked, or documented.
 - A generated package looks wrong and Codex needs to trace the problem back to text extraction, line ranges, or curation data.

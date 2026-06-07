@@ -197,6 +197,8 @@ Do not place engine rules, backend workflows, or frontend behavior in this utili
 
 Prefer fixing curation data and import logic rather than compensating in the app.
 
+The utility defaults to full-book imports. Use subset imports only when the task explicitly calls for a limited playable slice. Do not assume the presence of `curated-subset.json` means subset import is the only supported workflow.
+
 When working on the main app, do not inspect `tools/content-import/` unless the task is explicitly about content import, generated content troubleshooting, or changes to the utility itself.
 
 ## Milestone 1 Exclusions

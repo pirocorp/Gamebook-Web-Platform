@@ -16,6 +16,11 @@ The current workflow supports:
 - extracting configured episode ranges from that text
 - building a final engine package from a curation config
 
+The same pipeline can be used for:
+
+- full-book imports where the config includes every episode
+- curated subset imports for playable vertical slices when you intentionally want only part of a book
+
 ### Tool Structure
 
 Files:
@@ -47,15 +52,23 @@ Typical output package lives under:
 content/gamebooks/{book-slug}/gamebook.json
 ```
 
-### Curation Model
+### Import Config Model
 
-The build step uses a curation config such as:
+The build step uses a config such as:
 
 ```text
-content/source/kotarakat-avreya/curated-subset.json
+content/source/kotarakat-avreya/book-config.json
 ```
 
-That config controls:
+Possible naming patterns include:
+
+```text
+content/source/{book-slug}/book-config.json
+content/source/{book-slug}/curated-full.json
+content/source/{book-slug}/curated-subset.json
+```
+
+The config controls:
 
 - package metadata
 - initial player state
@@ -65,11 +78,17 @@ That config controls:
 - omitted source-faithful choices
 - unmodeled mechanics notes
 
+Full-book import should be treated as the default mode.
+
+Use subset import only when you intentionally want a limited playable slice.
+
+For subset imports, omitted choices and slice-specific notes are expected.
+
 ### Important Behavior
 
 - `pdf-to-text` preserves page markers like `--- PAGE 24 ---` so line numbers remain traceable.
-- `extract-episodes` uses `sourceLineStart` and `sourceLineEnd` from the curation config.
-- `build-gamebook-package` creates the final package from curated data, not directly from the raw PDF.
+- `extract-episodes` uses `sourceLineStart` and `sourceLineEnd` from the config.
+- `build-gamebook-package` creates the final package from configured data, not directly from the raw PDF.
 - Repo-relative paths are resolved from the repository root even when commands run through `npm --prefix`.
 
 ## Runbook
@@ -111,12 +130,12 @@ Expected result:
 - creates a page-by-page text dump
 - preserves page markers for source tracing
 
-### 4. Prepare Or Update The Curation Config
+### 4. Prepare Or Update The Import Config
 
 Edit:
 
 ```text
-content/source/{book-slug}/curated-subset.json
+content/source/{book-slug}/{config-file}.json
 ```
 
 Set:
@@ -129,10 +148,21 @@ Set:
 - omitted choices
 - unmodeled mechanics
 
+Choose the config shape based on the goal:
+
+- full-book import: include every episode in the source book
+- subset import: include only the episodes for the intended playable slice
+
+Suggested file names:
+
+- `book-config.json` as the default neutral name
+- `curated-full.json` for a complete book
+- `curated-subset.json` for a vertical slice when you intentionally want a subset
+
 ### 5. Extract Curated Episode Blocks
 
 ```powershell
-npm.cmd --prefix tools/content-import run extract-episodes -- --config content/source/kotarakat-avreya/curated-subset.json --out content/source/kotarakat-avreya/kotarakat-curated-episodes.json
+npm.cmd --prefix tools/content-import run extract-episodes -- --config content/source/kotarakat-avreya/{config-file}.json --out content/source/kotarakat-avreya/kotarakat-curated-episodes.json
 ```
 
 Use this output to audit whether the selected line ranges match the intended episodes.
@@ -140,7 +170,7 @@ Use this output to audit whether the selected line ranges match the intended epi
 ### 6. Build The Final Gamebook Package
 
 ```powershell
-npm.cmd --prefix tools/content-import run build-gamebook -- --config content/source/kotarakat-avreya/curated-subset.json
+npm.cmd --prefix tools/content-import run build-gamebook -- --config content/source/kotarakat-avreya/{config-file}.json
 ```
 
 Expected result:
@@ -155,7 +185,7 @@ Minimum checks:
 
 - run `npm.cmd --prefix tools/content-import run typecheck`
 - open the generated JSON and confirm it parses
-- confirm all `choices[].targetEpisodeKey` values point to included episodes when building a curated playable slice
+- confirm all `choices[].targetEpisodeKey` values point to included episodes
 - confirm omitted source choices are recorded in metadata when using curated subsets
 
 ### 8. Clean Working State If Needed

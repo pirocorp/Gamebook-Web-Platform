@@ -74,7 +74,7 @@ export interface PlayerStateConfig {
   custom: Record<string, unknown>;
 }
 
-export interface CuratedSubsetConfig {
+export interface GamebookImportConfig {
   sourceTextPath: string;
   outputPath: string;
   package: GamebookPackageConfig;
