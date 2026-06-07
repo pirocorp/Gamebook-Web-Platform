@@ -1,0 +1,4 @@
+interface:
+  display_name: "Content Import Pipeline"
+  short_description: "Use the repo gamebook import workflow"
+  default_prompt: "Use $content-import-pipeline to update or troubleshoot the gamebook content import workflow in this repository."
