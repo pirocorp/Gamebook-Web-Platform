@@ -2,28 +2,66 @@
 
 A public web platform for hosting and playing interactive gamebooks.
 
-The project is designed as a generic gamebook engine, not as a hardcoded reader for one book. The first playable vertical slice uses a curated subset of **Котаракът и Спасението на Аврея** to validate the architecture.
+Run commands from the repository root. Project commands may use repo-relative
+paths.
 
-## Stack
+## Documentation
 
-- Backend: ASP.NET Core, Controllers, MediatR, EF Core
-- Domain: rich domain entities, aggregates, Clean Architecture boundaries
-- Database: PostgreSQL, JSONB, EF Core migrations
-- Authentication: ASP.NET Core Identity cookie authentication
-- Frontend: Vanilla TypeScript, Vite multipage HTML/CSS, SPA behavior only for `/play`
-- Local development: Docker Compose supported
+### Purpose
 
-The backend is API-first. Public and auth pages use classic full-page navigation through separate Vite HTML/TypeScript entry points. The game reader is the only MVP area that behaves like a single page application after it loads.
+This repository contains the runtime web application for the GameBook platform.
 
-## Tooling Boundary
+The platform is designed as a generic gamebook engine, not as a hardcoded
+reader for one book. The first playable vertical slice uses a curated subset of
+`Котаракът и Спасението на Аврея` to validate the architecture.
 
-`tools/content-import/` is offline developer tooling for preparing `content/gamebooks/` packages.
+### Current Stack
 
-It is not part of the runtime web app. When working on backend or frontend application features, prefer staying within the app code unless the task explicitly involves content import, generated package troubleshooting, or updates to the utility itself.
+- backend: ASP.NET Core, controllers, MediatR, EF Core
+- domain: rich domain entities, aggregates, Clean Architecture boundaries
+- database: PostgreSQL, JSONB, EF Core migrations
+- authentication target: ASP.NET Core Identity cookie authentication
+- frontend: Vanilla TypeScript, Vite multipage HTML/CSS, SPA behavior only for `/play`
+- local development: Docker Compose supported
 
-The utility defaults to full-book imports where the config includes every episode, and also supports curated subset imports for MVP slices when intentionally needed.
+### Current Implementation Baseline
 
-## Milestone 1
+The current implementation pass uses these concrete choices:
+
+- target `.NET 10`
+- use `xUnit` for backend tests
+- use `MediatR` under the available Community license
+- run PostgreSQL and the backend API in Docker Compose
+- expose the API container on `http://localhost:8080`
+- postpone ASP.NET Core Identity implementation to the next vertical slice
+
+### Project Structure
+
+Files and folders:
+
+- `backend/GameBook.Api/`: ASP.NET Core API entry point, controllers, feature slices
+- `backend/GameBook.Core/`: domain model and core interfaces
+- `backend/GameBook.Data/`: EF Core DbContext, mappings, repositories
+- `backend/GameBook.Tests/`: xUnit test project for backend/domain coverage
+- `frontend/`: Vite frontend app
+- `content/gamebooks/`: engine-ready gamebook packages
+- `content/source/`: source material and curation inputs
+- `tools/content-import/`: offline content import utility
+- `docs/`: architecture, ADRs, implementation docs, and runbooks
+
+### Runtime And Tooling Boundary
+
+This repository has two distinct parts:
+
+- the runtime web application under `backend/` and `frontend/`
+- the offline content import tooling under `tools/content-import/`
+
+The content import utility prepares `content/gamebooks/*` data but is not part
+of the runtime app. When working on backend or frontend application features,
+prefer staying within the app code unless the task explicitly involves content
+import, generated package troubleshooting, or updates to the utility itself.
+
+### Milestone 1 Scope
 
 Milestone 1 focuses on a first playable vertical slice:
 
@@ -37,12 +75,102 @@ Milestone 1 focuses on a first playable vertical slice:
 - backend-owned game logic
 - seeded gamebook package from `content/gamebooks/`
 
-Admin editor, full book import, production hosting, infrastructure hardening, CSRF protection, public CORS policy, password reset, email confirmation, and external login are out of scope for Milestone 1.
+Out of scope for Milestone 1:
 
-## Important docs
+- admin editor
+- full book import UI
+- production hosting and hardening
+- CSRF protection
+- public CORS policy
+- password reset
+- email confirmation
+- external login
 
-- `AGENTS.md` — AI/developer rules
-- `ARCHITECTURE.md` — high-level architecture
-- `ROADMAP.md` — implementation roadmap
-- `docs/decisions/` — architecture decision records
-- `docs/project/implementation-plan.md` — complete implementation plan
+## Runbook
+
+For a more operational version of these steps, see
+[docs/project/runbook.md](/c:/!repos/Gamebook-Web-Platform/docs/project/runbook.md).
+
+### 1. Start The Local Containers
+
+```powershell
+docker compose up --build
+```
+
+Expected result:
+
+- PostgreSQL starts on `localhost:5432`
+- the API starts on `http://localhost:8080`
+
+### 2. Build The Backend Locally
+
+```powershell
+dotnet build GameBook.WebPlatform.sln
+```
+
+Expected result:
+
+- the solution builds successfully
+- API, Core, Data, and Tests projects compile together
+
+### 3. Run The Backend Tests
+
+```powershell
+dotnet test GameBook.WebPlatform.sln
+```
+
+Expected result:
+
+- all current xUnit tests pass
+
+### 4. Call The API Manually
+
+Use the included HTTP file:
+
+```text
+backend/GameBook.Api/GameBook.Api.http
+```
+
+Or call the basic endpoints directly:
+
+```powershell
+curl http://localhost:8080/api/health
+curl http://localhost:8080/api/books
+```
+
+### 5. Run The API Outside Docker If Needed
+
+The API can still run locally without the containerized app:
+
+```powershell
+dotnet run --project backend/GameBook.Api/GameBook.Api.csproj --launch-profile http
+```
+
+Local non-container API URL:
+
+```text
+http://localhost:5019
+```
+
+This mode still expects PostgreSQL to be available on `localhost:5432`.
+
+### 6. Stop The Containers
+
+```powershell
+docker compose down
+```
+
+To also remove the PostgreSQL data volume:
+
+```powershell
+docker compose down -v
+```
+
+## Important Docs
+
+- `AGENTS.md`: AI/developer rules
+- `ARCHITECTURE.md`: high-level architecture
+- `ROADMAP.md`: implementation roadmap
+- `docs/decisions/`: architecture decision records
+- `docs/project/implementation-plan.md`: complete implementation plan
+- `docs/project/runbook.md`: project startup and verification runbook
