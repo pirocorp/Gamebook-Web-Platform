@@ -7,6 +7,10 @@ description: Guide the repository-specific content import utility, an offline au
 
 Use this skill for the `tools/content-import` workflow in this repository.
 
+This is a repository-authored skill for the Gamebook Web Platform. When content
+import guidance overlaps with imported or vendor skills, follow this skill and
+the repository's `AGENTS.md` first.
+
 Treat the utility as a content-packaging pipeline, not as game-engine logic. Keep the engine generic and keep book-specific behavior in data under `content/`.
 
 Treat code under `tools/content-import/` as offline developer tooling rather than backend or frontend runtime code.

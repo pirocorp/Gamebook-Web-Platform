@@ -36,6 +36,36 @@ Database:
 - JSONB for dynamic game data
 - EF Core migrations from day one
 
+## Instruction Priority
+
+If installed or external skills conflict with this repository's guidance, follow
+this repository's instructions instead.
+
+Priority order:
+
+1. `AGENTS.md`
+2. repo-specific custom skills
+3. external installed skills
+4. general framework guidance
+
+Skills under `.codex/skills/` may be either repo-authored custom skills or
+imported vendor/third-party skills installed only for this project.
+
+Do not treat all project-local skills as equal by default.
+
+When both exist under `.codex/skills/`, repo-authored custom skills take
+precedence over imported vendor/third-party skills.
+
+Imported vendor/third-party skills are supplementary framework guidance only.
+
+For this project, that especially applies to:
+
+- vertical slice structure
+- Controllers + MediatR
+- thin controllers
+- domain rules in `GameBook.Core`
+- cookie authentication for MVP
+
 ## Backend Rules
 
 Use vertical slices.
