@@ -1,6 +1,6 @@
 ---
 name: content-import-pipeline
-description: Guide the repository-specific content import utility that turns source book assets into engine-ready `gamebook.json` packages. Use when Codex needs to import or update a gamebook slice, run or troubleshoot `tools/content-import`, edit `curated-subset.json`, validate extracted episode ranges, verify generated choice targets, or keep the import tool and its documentation aligned with this repo's content rules.
+description: Guide the repository-specific content import utility, an offline authoring and packaging workflow that prepares engine-ready `gamebook.json` files and is not part of the main runtime app. Use when Codex needs to import or update a gamebook slice, run or troubleshoot `tools/content-import`, edit `curated-subset.json`, validate extracted episode ranges, verify generated choice targets, or keep the import tool and its documentation aligned with this repo's content rules.
 ---
 
 # Content Import Pipeline
@@ -8,6 +8,8 @@ description: Guide the repository-specific content import utility that turns sou
 Use this skill for the `tools/content-import` workflow in this repository.
 
 Treat the utility as a content-packaging pipeline, not as game-engine logic. Keep the engine generic and keep book-specific behavior in data under `content/`.
+
+Treat code under `tools/content-import/` as offline developer tooling rather than backend or frontend runtime code.
 
 ## Follow This Workflow
 

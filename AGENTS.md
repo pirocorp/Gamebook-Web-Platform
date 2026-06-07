@@ -187,6 +187,18 @@ One GameBook = One Language
 
 A translated book is another `GameBook`.
 
+## Tooling Boundary
+
+`tools/content-import/` is offline development tooling for preparing `content/gamebooks/*` data.
+
+It is not part of the main web app runtime.
+
+Do not place engine rules, backend workflows, or frontend behavior in this utility.
+
+Prefer fixing curation data and import logic rather than compensating in the app.
+
+When working on the main app, do not inspect `tools/content-import/` unless the task is explicitly about content import, generated content troubleshooting, or changes to the utility itself.
+
 ## Milestone 1 Exclusions
 
 Do not add:
