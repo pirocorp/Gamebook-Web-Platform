@@ -73,6 +73,9 @@ Start the full local runtime:
 docker compose up --build
 ```
 
+For the current local setup, the API applies pending EF Core migrations on
+startup.
+
 Start only PostgreSQL:
 
 ```powershell

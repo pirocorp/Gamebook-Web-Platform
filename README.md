@@ -111,6 +111,7 @@ Expected result:
 - PostgreSQL starts on `localhost:5432`
 - the API starts on `http://localhost:8080`
 - the API docs UI is available at `http://localhost:8080/scalar`
+- pending EF Core migrations are applied on API startup for the current local setup
 
 ### 2. Build The Backend Locally
 
