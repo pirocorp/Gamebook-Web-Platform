@@ -1,5 +1,20 @@
 
 services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/GameBook.Api/Dockerfile
+    container_name: gamebook-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__GameBook: Host=postgres;Port=5432;Database=gamebook;Username=gamebook;Password=gamebook
+    ports:
+      - "8080:8080"
+
   postgres:
     image: postgres:16-alpine
     container_name: gamebook-postgres

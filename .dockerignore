@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+.git
+.gitignore
+.codex
+.agents
+frontend/node_modules
