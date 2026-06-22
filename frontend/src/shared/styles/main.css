@@ -10,7 +10,7 @@
     --radius-xl: 28px;
     --radius-lg: 22px;
     --radius-md: 16px;
-    --content-width: 1180px;
+    --content-width: 1360px;
 }
 
 * {
@@ -51,6 +51,14 @@ button {
     padding: 32px 0 64px;
 }
 
+.books-page .app-shell {
+    width: min(calc(100% - 32px), 1440px);
+}
+
+.book-details-page .app-shell {
+    width: min(calc(100% - 32px), 1480px);
+}
+
 .hero-panel,
 .feature-card,
 .content-card,
@@ -66,10 +74,13 @@ button {
 
 .hero-panel {
     border-radius: var(--radius-xl);
-    overflow: hidden;
     position: relative;
     padding: 42px;
     margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(140px, 0.4fr);
+    column-gap: 24px;
+    align-items: end;
 }
 
 .hero-panel::before {
@@ -97,12 +108,35 @@ button {
     margin: 0;
     font-family: "Cormorant Garamond", Georgia, serif;
     font-weight: 600;
-    line-height: 0.95;
+    line-height: 1.02;
 }
 
 .hero-title {
-    font-size: clamp(3rem, 7vw, 5.6rem);
-    max-width: 10ch;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    max-width: 16ch;
+    text-wrap: balance;
+}
+
+.book-hero-title {
+    grid-column: 1 / -1;
+    max-width: none;
+    width: min(100%, 24ch);
+    text-wrap: pretty;
+}
+
+.book-details-page .hero-copy {
+    max-width: 62ch;
+    font-size: 1rem;
+}
+
+.book-details-page .hero-panel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 34px 42px;
+    margin-bottom: 20px;
+}
+
+.book-details-page .hero-title {
+    font-size: clamp(2.7rem, 4.9vw, 4.45rem);
 }
 
 .hero-copy,
@@ -116,9 +150,38 @@ button {
 }
 
 .hero-copy {
-    max-width: 62ch;
+    max-width: 60ch;
     font-size: 1.05rem;
     margin-top: 18px;
+}
+
+.hero-panel > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-panel .eyebrow,
+.hero-panel .hero-title,
+.hero-panel .hero-copy {
+    grid-column: 1;
+}
+
+.books-page .hero-panel {
+    padding: 34px 40px;
+    margin-bottom: 18px;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.books-page .hero-title {
+    font-size: clamp(2.7rem, 5.2vw, 4.6rem);
+    max-width: none;
+    width: min(100%, 18ch);
+    text-wrap: pretty;
+}
+
+.books-page .hero-copy {
+    font-size: 1rem;
+    max-width: 62ch;
 }
 
 .feature-grid {
@@ -146,6 +209,33 @@ button {
 
 .feature-content {
     border-right: 1px solid var(--line);
+}
+
+.books-page .feature-card {
+    grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.45fr);
+}
+
+.books-page .feature-content,
+.books-page .feature-side {
+    padding: 28px;
+}
+
+.books-page .feature-title {
+    font-size: clamp(2rem, 4.2vw, 3.35rem);
+    margin-bottom: 12px;
+    max-width: none;
+}
+
+.books-page .feature-meta {
+    margin: 14px 0 18px;
+}
+
+.books-page .feature-copy {
+    line-height: 1.62;
+}
+
+.books-page .footer-actions {
+    margin-top: 18px;
 }
 
 .feature-title,
@@ -240,6 +330,30 @@ button {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
     gap: 24px;
+}
+
+.book-details-page .details-layout {
+    grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.55fr);
+    gap: 20px;
+}
+
+.book-details-page .details-content,
+.book-details-page .status-card {
+    padding: 28px;
+}
+
+.book-details-page .details-title {
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    margin-bottom: 12px;
+}
+
+.book-details-page .details-meta {
+    margin: 14px 0 18px;
+}
+
+.book-details-page .details-copy,
+.book-details-page .status-copy {
+    line-height: 1.6;
 }
 
 .content-card {
@@ -353,6 +467,7 @@ button {
 }
 
 @media (max-width: 900px) {
+    .hero-panel,
     .feature-card,
     .details-layout,
     .play-layout {
@@ -383,5 +498,13 @@ button {
 
     .hero-title {
         font-size: 2.7rem;
+        max-width: 9ch;
+        text-wrap: initial;
+    }
+
+    .book-hero-title {
+        grid-column: 1;
+        max-width: 11ch;
+        width: auto;
     }
 }

@@ -38,7 +38,7 @@ async function renderPage(): Promise<void> {
         mount(pageShell(`
             <section class="hero-panel">
                 <div class="eyebrow">Book Details</div>
-                <h1 class="hero-title">${details.title}</h1>
+                <h1 class="hero-title book-hero-title">${details.title}</h1>
                 <p class="hero-copy">
                     A curated first-path adventure prepared to validate the engine and the
                     anonymous reading flow before the wider catalog arrives.
