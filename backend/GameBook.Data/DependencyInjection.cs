@@ -1,4 +1,5 @@
 using GameBook.Core.Interfaces;
+using GameBook.Core.GameEngine;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,9 @@ public static class DependencyInjection
         });
 
         services.AddScoped<IGameBookRepository, Repositories.GameBookRepository>();
+        services.AddScoped<IGameBookPackageRepository, FileSystemGameBookPackageRepository>();
+        services.AddScoped<IGamePlayService, GamePlayService>();
+        services.AddScoped<GameBookCatalogSeeder>();
 
         return services;
     }

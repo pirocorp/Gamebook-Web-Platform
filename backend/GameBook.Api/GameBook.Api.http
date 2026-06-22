@@ -12,4 +12,53 @@ Accept: application/json
 GET {{GameBook.Api_HostAddress}}/api/books/missing-book
 Accept: application/json
 
-###
+### Start anonymous game
+POST {{GameBook.Api_HostAddress}}/api/games/anonymous/start
+Content-Type: application/json
+
+{
+  "gamebookSlug": "kotarakat-avreya"
+}
+
+### Get anonymous game state
+POST {{GameBook.Api_HostAddress}}/api/games/anonymous/state
+Content-Type: application/json
+
+{
+  "save": {
+    "gamebookSlug": "kotarakat-avreya",
+    "currentEpisodeKey": "1",
+    "playerState": {
+      "readerName": "",
+      "rating": null,
+      "money": 100,
+      "items": [],
+      "skills": [],
+      "codeWords": [],
+      "notes": "",
+      "custom": {}
+    }
+  }
+}
+
+### Submit anonymous choice
+POST {{GameBook.Api_HostAddress}}/api/games/anonymous/choice
+Content-Type: application/json
+
+{
+  "save": {
+    "gamebookSlug": "kotarakat-avreya",
+    "currentEpisodeKey": "1",
+    "playerState": {
+      "readerName": "",
+      "rating": null,
+      "money": 100,
+      "items": [],
+      "skills": [],
+      "codeWords": [],
+      "notes": "",
+      "custom": {}
+    }
+  },
+  "choiceKey": "1-to-31"
+}

@@ -23,4 +23,12 @@
     <ProjectReference Include="..\GameBook.Data\GameBook.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\content\gamebooks\**\*">
+      <Link>content\gamebooks\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

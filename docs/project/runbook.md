@@ -138,6 +138,9 @@ Current manual verification endpoints:
 - `GET /api/health`
 - `GET /api/books`
 - `GET /api/books/{slug}`
+- `POST /api/games/anonymous/start`
+- `POST /api/games/anonymous/state`
+- `POST /api/games/anonymous/choice`
 
 HTTP request examples live in:
 
@@ -153,7 +156,10 @@ backend/GameBook.Api/GameBook.Api.http
 - Confirm `dotnet build GameBook.WebPlatform.sln` succeeds after backend code changes.
 - Confirm `dotnet test GameBook.WebPlatform.sln` succeeds after backend or domain changes.
 - Confirm `GET /api/health` returns `200 OK`.
-- Confirm `GET /api/books` returns a valid JSON response even when the database has no seeded rows yet.
+- Confirm `GET /api/books` returns the seeded curated book catalog.
+- Confirm `POST /api/games/anonymous/start` returns episode `1` for `kotarakat-avreya`.
+- Confirm `POST /api/games/anonymous/state` returns the current episode from the provided anonymous save.
+- Confirm `POST /api/games/anonymous/choice` updates the current episode and applies supported effects.
 - Confirm local `dotnet run` still works after Docker-specific configuration changes.
 - Confirm runtime app changes do not accidentally drift into `tools/content-import/` unless the task is explicitly about content import.
 
@@ -180,7 +186,15 @@ If `/api/books` fails unexpectedly:
 
 - confirm the database connection is valid
 - confirm EF Core wiring in `GameBook.Data` still registers correctly
-- confirm the failure is not simply an empty result from an unseeded database
+- confirm the curated package seeder ran successfully on startup
+
+If anonymous game endpoints fail unexpectedly:
+
+- confirm `content/gamebooks/{book-slug}/gamebook.json` exists in the runtime output or container image
+- confirm the current save payload uses a valid `gamebookSlug`
+- confirm the current save payload uses an episode key that exists in the curated package
+- confirm the selected `choiceKey` belongs to the current episode
+- confirm the choice is not filtered out by unsupported or unmet conditions
 
 If backend tests stop running:
 

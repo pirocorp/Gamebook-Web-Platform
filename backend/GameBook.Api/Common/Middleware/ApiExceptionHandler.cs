@@ -12,6 +12,7 @@ internal sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) :
     {
         var (statusCode, title) = exception switch
         {
+            KeyNotFoundException => (StatusCodes.Status404NotFound, "Not Found"),
             ArgumentException => (StatusCodes.Status400BadRequest, "Bad Request"),
             InvalidOperationException => (StatusCodes.Status409Conflict, "Conflict"),
             _ => (0, string.Empty)

@@ -37,7 +37,7 @@ The current implementation pass uses these concrete choices:
 
 ### Current Progress Snapshot
 
-The repository is currently in an early Phase 1 state.
+The repository is currently in an active Phase 1 backend vertical-slice state.
 
 Implemented today:
 
@@ -49,17 +49,21 @@ Implemented today:
 - automatic migration apply on API startup for local development
 - health endpoint at `GET /api/health`
 - read-only book endpoints at `GET /api/books` and `GET /api/books/{slug}`
-- initial domain test coverage with `xUnit`
+- curated `gamebook.json` package loading from `content/gamebooks/`
+- anonymous stateless game endpoints for start, state, and choice execution
+- backend rule execution for `moneyAtLeast`, `addItem`, and `removeMoney`
+- automatic book catalog seeding from the curated package
+- backend and domain test coverage with `xUnit`
+- verified Docker runtime and live Scalar API UI
 
 Not implemented yet:
 
 - Vite frontend application
 - ASP.NET Core Identity cookie authentication
-- register/login/logout flows
 - `/play/{gameId}` reader flow
-- anonymous and authenticated saves
-- backend game progression and choice execution
-- seeded playable gamebook package wired into the runtime
+- browser-side anonymous localStorage integration
+- authenticated saves
+- code-word branching and other later-phase mechanics
 
 ### Verification Rule
 
@@ -109,8 +113,8 @@ Milestone 1 focuses on a first playable vertical slice:
 
 Current status relative to Milestone 1:
 
-- done: backend foundation, database foundation, Docker local setup, health endpoint, book list endpoint, book details endpoint, backend test project
-- not started or still pending: frontend pages, anonymous save flow, playable session flow, reader UI, game engine execution path
+- done: backend foundation, database foundation, Docker local setup, health endpoint, book list endpoint, book details endpoint, anonymous game start/state/choice endpoints, curated package loading, backend test project
+- not started or still pending: frontend pages, browser localStorage integration, reader UI, broader game engine expansion
 
 ### Locked Milestone 1 Backend Decisions
 
@@ -133,6 +137,29 @@ Not part of this first backend slice:
 - free-form shopping rules
 - authenticated save persistence
 - ASP.NET Core Identity flows
+
+### What We Just Implemented
+
+The current backend slice delivers a playable anonymous API flow against the curated
+`Котаракът` package.
+
+What was added:
+
+- runtime loading of `content/gamebooks/{book-slug}/gamebook.json`
+- domain models for package episodes, choices, conditions, effects, player state, and anonymous saves
+- stateless anonymous game APIs for:
+  - starting a new game from a book slug
+  - hydrating current state from browser save data
+  - executing a selected choice and returning updated state
+- automatic seeding of the read-only books catalog from the same curated package
+- test coverage for package loading and core game flow mechanics
+
+What was verified:
+
+- `dotnet build GameBook.WebPlatform.sln`
+- `dotnet test GameBook.WebPlatform.sln`
+- `docker compose up --build -d`
+- live API checks for health, books, anonymous game flow, and Scalar UI
 
 Out of scope for Milestone 1:
 
@@ -198,6 +225,7 @@ Or call the basic endpoints directly:
 curl http://localhost:8080/scalar
 curl http://localhost:8080/api/health
 curl http://localhost:8080/api/books
+curl -X POST http://localhost:8080/api/games/anonymous/start -H "Content-Type: application/json" -d "{\"gamebookSlug\":\"kotarakat-avreya\"}"
 ```
 
 ### 5. Run The API Outside Docker If Needed

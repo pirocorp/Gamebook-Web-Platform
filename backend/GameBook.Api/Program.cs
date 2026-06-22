@@ -30,6 +30,9 @@ await using (var scope = app.Services.CreateAsyncScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<GameBookDbContext>();
     await dbContext.Database.MigrateAsync();
+
+    var catalogSeeder = scope.ServiceProvider.GetRequiredService<GameBookCatalogSeeder>();
+    await catalogSeeder.SeedAsync(CancellationToken.None);
 }
 
 if (app.Environment.IsDevelopment())
