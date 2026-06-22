@@ -39,6 +39,11 @@ The current implementation pass uses these concrete choices:
 
 The repository is currently in an active Phase 1 backend vertical-slice state.
 
+Current implementation note:
+
+- PostgreSQL currently stores the seeded book catalog metadata used by the books endpoints
+- the playable runtime content still comes directly from `content/gamebooks/{book-slug}/gamebook.json`
+
 Implemented today:
 
 - ASP.NET Core solution with `GameBook.Api`, `GameBook.Core`, `GameBook.Data`, and `GameBook.Tests`

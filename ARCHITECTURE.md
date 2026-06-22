@@ -43,6 +43,11 @@ Implemented today:
 - EF Core DbContext, mappings, repository, and initial migration
 - PostgreSQL local runtime through Docker Compose
 
+Current runtime data split:
+
+- PostgreSQL currently stores only the seeded gamebook catalog metadata used by the books endpoints
+- the playable gamebook package, including episodes, choices, initial state, conditions, and effects, is currently loaded from `content/gamebooks/{book-slug}/gamebook.json`
+
 Still pending:
 
 - frontend pages and Vite app structure

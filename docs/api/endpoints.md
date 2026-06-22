@@ -2,6 +2,12 @@
 
 This document describes the endpoints currently implemented in the backend.
 
+Current implementation note:
+
+- `GET /api/books` and `GET /api/books/{slug}` read catalog metadata stored in PostgreSQL
+- the anonymous play endpoints load the playable runtime package from `content/gamebooks/{slug}/gamebook.json`
+- the full episode/choice graph is not stored in PostgreSQL yet
+
 Base URLs:
 
 - Docker Compose: `http://localhost:8080`
