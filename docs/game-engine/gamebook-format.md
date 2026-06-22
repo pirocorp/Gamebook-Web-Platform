@@ -132,64 +132,51 @@ Useful metadata fields:
 
 ## Conditions
 
-Milestone 1 condition types:
+The first backend playable slice supports only:
 
 ```text
-hasItem
-hasSkill
-hasCodeWord
-missingCodeWord
 moneyAtLeast
-all
-any
 ```
 
-Examples:
+Example:
 
 ```json
-{ "type": "hasItem", "item": "item-key" }
-{ "type": "hasSkill", "skill": "skill-key" }
-{ "type": "hasCodeWord", "codeWord": "code-word-key" }
-{ "type": "missingCodeWord", "codeWord": "code-word-key" }
 { "type": "moneyAtLeast", "amount": 20 }
 ```
 
-Composite condition:
+Deferred beyond the first backend slice:
 
-```json
-{
-  "type": "all",
-  "conditions": [
-    { "type": "hasItem", "item": "item-key" },
-    { "type": "moneyAtLeast", "amount": 20 }
-  ]
-}
-```
+- `hasItem`
+- `hasSkill`
+- `hasCodeWord`
+- `missingCodeWord`
+- `all`
+- `any`
 
 ## Effects
 
-Milestone 1 effect types:
+The first backend playable slice supports only:
 
 ```text
 addItem
-removeItem
-addCodeWord
 removeMoney
-addMoney
-setCurrentEpisode
 ```
 
 Examples:
 
 ```json
 { "type": "addItem", "item": "item-key" }
-{ "type": "removeItem", "item": "item-key" }
-{ "type": "addCodeWord", "codeWord": "code-word-key" }
 { "type": "removeMoney", "amount": 20 }
-{ "type": "addMoney", "amount": 10 }
 ```
 
-For ordinary choices, use `targetEpisodeKey` for navigation and leave `setCurrentEpisode` out of `effects`.
+Deferred beyond the first backend slice:
+
+- `removeItem`
+- `addCodeWord`
+- `addMoney`
+- `setCurrentEpisode`
+
+For ordinary choices, use `targetEpisodeKey` for navigation.
 
 ## First Subset
 

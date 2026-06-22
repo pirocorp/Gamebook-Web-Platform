@@ -102,18 +102,37 @@ Milestone 1 focuses on a first playable vertical slice:
 
 - `/books`
 - `/books/{slug}`
-- `/login`
-- `/register`
 - `/play/{gameId}`
 - anonymous localStorage saves
-- authenticated PostgreSQL saves
 - backend-owned game logic
 - seeded gamebook package from `content/gamebooks/`
 
 Current status relative to Milestone 1:
 
 - done: backend foundation, database foundation, Docker local setup, health endpoint, book list endpoint, book details endpoint, backend test project
-- not started or still pending: frontend pages, authentication, save system, playable session flow, reader UI, game engine execution path
+- not started or still pending: frontend pages, anonymous save flow, playable session flow, reader UI, game engine execution path
+
+### Locked Milestone 1 Backend Decisions
+
+The backend MVP for the first playable slice is locked to these decisions:
+
+1. Gamebook source for runtime:
+   use the curated package under `content/gamebooks/{book-slug}/gamebook.json` as the runtime contract for the first slice
+2. Anonymous save shape:
+   save `gamebookSlug`, `currentEpisodeKey`, and `playerState`
+3. Supported mechanics in the first backend slice:
+   support only `moneyAtLeast`, `addItem`, and `removeMoney`
+4. Save persistence strategy:
+   support anonymous browser `localStorage` saves only for this slice
+
+Not part of this first backend slice:
+
+- full-book runtime support beyond the curated subset
+- full choice history
+- code-word-based branching
+- free-form shopping rules
+- authenticated save persistence
+- ASP.NET Core Identity flows
 
 Out of scope for Milestone 1:
 

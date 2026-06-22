@@ -51,6 +51,18 @@ Still pending:
 - `/play/{gameId}` runtime flow
 - game engine execution for episodes, choices, conditions, and effects
 
+## Locked backend MVP decisions
+
+For the first backend playable slice, use these constraints:
+
+- runtime game data comes from the curated `content/gamebooks/{book-slug}/gamebook.json` package
+- anonymous save persistence lives only in browser `localStorage`
+- the anonymous save shape contains only `gamebookSlug`, `currentEpisodeKey`, and `playerState`
+- full choice history is deferred
+- supported mechanics are limited to `moneyAtLeast`, `addItem`, and `removeMoney`
+- code-word branching and other unmodeled mechanics are deferred
+- ASP.NET Core Identity remains part of the broader architecture, but is not part of this first backend slice
+
 ## Backend projects
 
 ```text

@@ -19,10 +19,8 @@ What is already in place:
 What remains before Milestone 1 is complete:
 
 - Vite frontend implementation
-- Identity cookie authentication
-- register/login/logout
 - playable `/play/{gameId}` flow
-- save system
+- anonymous localStorage save flow
 - backend game progression and choice execution
 - runtime book seed/import integration
 
@@ -36,12 +34,12 @@ What remains before Milestone 1 is complete:
 
 ## Phase 1 - First playable vertical slice
 
-Goal: one subset of `Котаракът и Спасението на Аврея` playable end-to-end.
+Goal: one curated subset of `Котаракът и Спасението на Аврея` playable end-to-end.
 
 - target `.NET 10`
 - use `xUnit`
 - wire Docker Compose from the first backend step
-- build the backend skeleton and first public endpoint scaffold before the Identity slice
+- build the backend skeleton and first public endpoint scaffold before the play slice
 
 [x] ASP.NET Core solution
 [ ] Vite frontend
@@ -49,15 +47,11 @@ Goal: one subset of `Котаракът и Спасението на Аврея`
 [x] EF Core setup
 [x] EF Core initial migration
 [x] MediatR setup
-[ ] ASP.NET Core Identity cookie auth
-[ ] Register/login/logout
 [ ] Seed/import gamebook package JSON
 [x] List books
 [x] Show book details
 [ ] Start anonymous game
-[ ] Start authenticated game
 [ ] Anonymous localStorage save
-[ ] Authenticated PostgreSQL save
 [ ] Load current episode
 [ ] Show available choices
 [ ] Execute choice through backend
@@ -65,6 +59,14 @@ Goal: one subset of `Котаракът и Спасението на Аврея`
 [ ] Update player state
 [ ] Render `/play` reader
 [x] Backend tests
+
+Locked backend MVP decisions for Phase 1:
+
+- runtime input is the curated `gamebook.json` package, not the whole book
+- anonymous saves persist only `gamebookSlug`, `currentEpisodeKey`, and `playerState`
+- full choice history is deferred
+- supported mechanics are limited to `moneyAtLeast`, `addItem`, and `removeMoney`
+- authenticated saves and Identity flows are deferred beyond this first backend slice
 
 ## Phase 2 - Core engine expansion
 
@@ -74,6 +76,9 @@ Goal: one subset of `Котаракът и Спасението на Аврея`
 [ ] More complete `Котаракът` import
 [ ] Book validation tools
 [ ] Improved save/load UI
+[ ] Choice history
+[ ] Code-word-based branching
+[ ] Authenticated save persistence
 
 ## Phase 3 - Admin foundation
 
