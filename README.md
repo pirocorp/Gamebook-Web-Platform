@@ -35,6 +35,32 @@ The current implementation pass uses these concrete choices:
 - expose the API container on `http://localhost:8080`
 - postpone ASP.NET Core Identity implementation to the next vertical slice
 
+### Current Progress Snapshot
+
+The repository is currently in an early Phase 1 state.
+
+Implemented today:
+
+- ASP.NET Core solution with `GameBook.Api`, `GameBook.Core`, `GameBook.Data`, and `GameBook.Tests`
+- MediatR wired into the API
+- EF Core + PostgreSQL data access
+- initial EF Core migration
+- Docker Compose setup for API + PostgreSQL
+- automatic migration apply on API startup for local development
+- health endpoint at `GET /api/health`
+- read-only book endpoints at `GET /api/books` and `GET /api/books/{slug}`
+- initial domain test coverage with `xUnit`
+
+Not implemented yet:
+
+- Vite frontend application
+- ASP.NET Core Identity cookie authentication
+- register/login/logout flows
+- `/play/{gameId}` reader flow
+- anonymous and authenticated saves
+- backend game progression and choice execution
+- seeded playable gamebook package wired into the runtime
+
 ### Verification Rule
 
 Before considering backend work done, verify it in this order:
@@ -83,6 +109,11 @@ Milestone 1 focuses on a first playable vertical slice:
 - authenticated PostgreSQL saves
 - backend-owned game logic
 - seeded gamebook package from `content/gamebooks/`
+
+Current status relative to Milestone 1:
+
+- done: backend foundation, database foundation, Docker local setup, health endpoint, book list endpoint, book details endpoint, backend test project
+- not started or still pending: frontend pages, authentication, save system, playable session flow, reader UI, game engine execution path
 
 Out of scope for Milestone 1:
 

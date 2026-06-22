@@ -30,6 +30,27 @@ The game engine is generic and data-driven. Gamebooks are imported from data pac
 
 The backend is API-first. Public and auth pages are Vite multipage HTML/TypeScript pages with classic full-page navigation. Only `/play/{gameId}` behaves like a single page application after the reader page loads.
 
+## Current implementation status
+
+The target architecture is broader than the current codebase.
+
+Implemented today:
+
+- backend solution split into API, Core, Data, and Tests projects
+- thin controllers calling MediatR queries
+- read-only books slice
+- health endpoint
+- EF Core DbContext, mappings, repository, and initial migration
+- PostgreSQL local runtime through Docker Compose
+
+Still pending:
+
+- frontend pages and Vite app structure
+- Identity cookie authentication flows
+- save game aggregates and persistence
+- `/play/{gameId}` runtime flow
+- game engine execution for episodes, choices, conditions, and effects
+
 ## Backend projects
 
 ```text
@@ -52,6 +73,12 @@ GameBook.Data
 
 GameBook.Tests
 ```
+
+Current codebase note:
+
+- `GameBook.Api`, `GameBook.Core`, `GameBook.Data`, and `GameBook.Tests` exist
+- the `frontend/` app structure has not been implemented yet
+- the current domain model is still minimal and does not yet include the planned engine-focused areas such as `GameEngine`, `Rules`, or `Effects`
 
 ## Main rules
 
