@@ -17,6 +17,12 @@ Interactive API UI:
 
 - Scalar: `GET /scalar`
 
+Related frontend routes currently implemented:
+
+- `GET /books`
+- `GET /books/{slug}`
+- `GET /play/{gameId}`
+
 ## Health
 
 ### `GET /api/health`
@@ -88,7 +94,7 @@ Returns:
 
 Use it for:
 
-- future `/books/{slug}` frontend page
+- current `/books/{slug}` frontend page
 - verifying a specific book is available before starting play
 
 ## Anonymous Games
@@ -250,6 +256,21 @@ Use it for:
 
 - main play loop choice submission
 - backend-owned rule execution with frontend-owned local persistence
+
+## Current Frontend Flow
+
+The current frontend uses these endpoints in order:
+
+1. `/books` calls `GET /api/books`
+2. `/books/{slug}` calls `GET /api/books/{slug}`
+3. start action calls `POST /api/games/anonymous/start`
+4. `/play/{gameId}` restores the browser save and calls `POST /api/games/anonymous/state`
+5. each reader choice calls `POST /api/games/anonymous/choice`
+
+The browser persists anonymous saves in localStorage under:
+
+- `gamebook.play.saves`
+- `gamebook.play.activeSaveId`
 
 ## Not Implemented Yet
 

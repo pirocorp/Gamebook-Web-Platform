@@ -2,22 +2,47 @@
 
 ## 1. Goal
 
-Build the first working vertical slice of the Gamebook Web Platform.
+Build and document the first working vertical slice of the Gamebook Web
+Platform.
 
-The first milestone should prove:
+The current milestone proves:
 
 - ASP.NET Core backend
 - Vertical Slice Architecture with MediatR
 - EF Core + PostgreSQL
-- rich domain entities and aggregates
-- ASP.NET Core Identity cookie authentication
-- anonymous and authenticated saves
+- rich domain boundaries in `GameBook.Core`
 - Vanilla TypeScript + Vite frontend
-- seeded real gamebook subset
+- seeded real gamebook package
 - backend-owned game logic
-- playable `/play` reader
+- playable anonymous `/play/{gameId}` reader
+- browser localStorage saves
 
-## 2. Locked Architecture
+The current slice does not yet include ASP.NET Core Identity or authenticated
+save persistence.
+
+## 2. Current Implementation Status
+
+Implemented today:
+
+- `GET /api/health`
+- `GET /api/books`
+- `GET /api/books/{slug}`
+- `POST /api/games/anonymous/start`
+- `POST /api/games/anonymous/state`
+- `POST /api/games/anonymous/choice`
+- frontend routes for `/books`, `/books/{slug}`, and `/play/{gameId}`
+- anonymous save persistence in browser localStorage
+- Docker Compose with API, PostgreSQL, and frontend containers
+- backend tests for runtime package loading and game progression logic
+
+Current runtime data split:
+
+- PostgreSQL stores seeded catalog metadata for books
+- playable episode and choice data is loaded at runtime from
+  `content/gamebooks/{slug}/gamebook.json`
+- the full playable graph is not stored in PostgreSQL yet
+
+## 3. Locked Architecture
 
 Backend:
 
@@ -26,14 +51,10 @@ Backend:
 - Controllers + MediatR
 - Vertical Slice Architecture
 - Clean Architecture boundaries
-- Rich domain entities
-- DDD aggregates and aggregate roots
+- rich domain entities
 - EF Core
 - PostgreSQL
-- JSONB
 - EF Core migrations from day one
-- ASP.NET Core Identity
-- HttpOnly cookie authentication
 
 Frontend:
 
@@ -42,28 +63,22 @@ Frontend:
 - HTML
 - CSS
 - No React/Vue/Angular
-- API-first frontend integration
-- Vite multipage app for public and auth pages
-- Classic multipage-style public pages
-- Classic multipage-style auth pages
-- SPA behavior only for `/play`
+- multipage entry points for `/books` and `/books/{slug}`
+- SPA-like reader behavior only for `/play`
 
 Database:
 
 - PostgreSQL
 - EF Core migrations
-- Strongly typed C# objects serialized to JSONB for executable game data
+- JSONB remains the long-term target for dynamic executable data
 
 Development:
 
 - Docker Compose supported
 - PostgreSQL runs in Docker
 - API can run locally or in Docker
-- Frontend can run locally with Vite or in Docker
-- During local development, Vite serves frontend pages and calls the ASP.NET Core API
-- Day-to-day frontend development prefers local Vite for fast reload
-- Local development should avoid CORS complexity by using a Vite dev proxy or another same-origin-style setup
-- Production hosting is out of scope for MVP
+- frontend can run locally with Vite or in Docker
+- Vite proxy is used to forward `/api` requests to the backend during frontend development
 
 Repository layout:
 
@@ -80,43 +95,37 @@ Gamebook-Web-Platform/
   docs/
 ```
 
-The root `src/` directory is not used in MVP.
-
-## 3. Milestone 1 Scope
+## 4. Milestone 1 Scope
 
 Included:
 
 - `/books`
 - `/books/{slug}`
+- `/play/{gameId}`
+- anonymous localStorage saves
+- first book: `Котаракът и Спасението на Аврея`
+- curated runtime package
+- backend validation of available choices
+- backend application of supported effects
+
+Excluded for this slice:
+
 - `/login`
 - `/register`
-- `/play/{gameId}`
-- register, login, logout
 - Identity cookie authentication
-- anonymous localStorage saves
 - authenticated PostgreSQL saves
-- first book: `Котаракът и Спасението на Аврея`
-- manually curated subset only
-- backend validates choices and applies effects
-
-Excluded:
-
 - admin editor
 - media upload UI
-- full book import
+- full book import UI
 - anonymous save to account migration
 - production hosting model
 - non-trivial infrastructure hardening
-- public CORS policy
-- CSRF protection for authenticated mutations
 - password reset
 - email confirmation
 - external login
 - JWT bearer authentication
-- frontend token storage
-- deployment hardening
 
-## 4. Domain Model
+## 5. Domain Model
 
 Aggregate roots:
 
@@ -126,34 +135,27 @@ SaveGame
 MediaAsset
 ```
 
-MVP structure:
+Current anonymous runtime state:
 
 ```text
-GameBook
- ├── Episodes
- │    └── Choices
- ├── InitialState
- └── Rules
-
-SaveGame
+AnonymousSave
+ ├── GamebookSlug
+ ├── CurrentEpisodeKey
  └── PlayerState
 ```
 
-No `GameBookVersion` in MVP.
+Current `PlayerState` fields rendered by the reader:
 
-`Episode` and `Choice` are not aggregate roots.
+- `readerName`
+- `rating`
+- `money`
+- `items`
+- `skills`
+- `codeWords`
+- `notes`
+- `custom`
 
-## 5. Language Model
-
-For MVP:
-
-```text
-One GameBook = One Language
-```
-
-If a book is translated, it becomes another `GameBook`.
-
-No multilingual field model in MVP.
+Full choice history is intentionally deferred beyond this slice.
 
 ## 6. Persistence Rules
 
@@ -169,13 +171,11 @@ Rules:
 - no `IEpisodeRepository`
 - no `IChoiceRepository`
 
-Repositories:
+Current storage split:
 
-```text
-IGameBookRepository
-ISaveGameRepository
-IMediaAssetRepository
-```
+- `IGameBookRepository` serves catalog metadata from PostgreSQL
+- `IGameBookPackageRepository` loads playable content from the JSON package on disk
+- anonymous play state is browser-owned and not persisted by the backend
 
 ## 7. Backend Structure
 
@@ -185,22 +185,16 @@ backend/
 GameBook.Api/
   Controllers/
     BooksController.cs
-    AuthController.cs
     GamesController.cs
+    HealthController.cs
   Features/
     Books/
       GetBooks/
       GetBookDetails/
-    Auth/
-      Register/
-      Login/
-      Logout/
-      Me/
     Games/
-      StartGame/
-      GetGameState/
-      ExecuteChoice/
-  Common/
+      StartAnonymousGame/
+      GetAnonymousGameState/
+      ExecuteAnonymousChoice/
 
 GameBook.Core/
   Domain/
@@ -208,22 +202,56 @@ GameBook.Core/
     Saves/
     Media/
   GameEngine/
-  Rules/
-  Effects/
   Interfaces/
 
 GameBook.Data/
   GameBookDbContext.cs
-  Configurations/
-  Repositories/
+  FileSystemGameBookPackageRepository.cs
+  GameBookCatalogSeeder.cs
   Migrations/
 
 GameBook.Tests/
 ```
 
-Controllers must be thin. Handlers orchestrate use cases. Game rules belong in Core.
+Controllers are thin. Handlers orchestrate use cases. Game rules belong in
+Core.
 
-## 8. First Gamebook Package
+## 8. Frontend Structure
+
+```text
+frontend/
+  books.html
+  book-details.html
+  play.html
+  src/
+    pages/
+      books.ts
+      book-details.ts
+    reader/
+      play.ts
+    shared/
+      api/
+      dom/
+      layout/
+      models/
+      saves/
+      styles/
+```
+
+Current frontend behavior:
+
+- `/books` lists available books from `GET /api/books`
+- `/books/{slug}` loads one book from `GET /api/books/{slug}`
+- `/play/{gameId}` restores the active local save, rebuilds state through
+  `POST /api/games/anonymous/state`, and posts choices through
+  `POST /api/games/anonymous/choice`
+
+Locked browser storage keys:
+
+- `gamebook.play.saves`
+- `gamebook.play.activeSaveId`
+
+## 9. Runtime Package
 
 Location:
 
@@ -231,83 +259,57 @@ Location:
 content/gamebooks/kotarakat-avreya/gamebook.json
 ```
 
-The package must follow `docs/game-engine/gamebook-format.md`.
+The package follows the documented gamebook format and currently acts as the
+runtime source of truth for:
 
-Use both `originalText` and `displayText`.
+- initial state
+- episodes
+- choices
+- supported conditions
+- supported effects
 
-Episode keys are strings. Conditions are `null` or one condition object. Effects are always arrays. Ordinary choice navigation uses `targetEpisodeKey`.
+Catalog metadata is seeded into PostgreSQL from this package family, but the
+reader still executes directly from the JSON package.
 
-Source extraction assets live under:
+## 10. Initial Rules and Effects
 
-```text
-content/source/kotarakat-avreya/
-```
-
-Reusable content import tools live under:
-
-```text
-tools/content-import/
-```
-
-First episode subset:
+Currently supported conditions:
 
 ```text
-1, 31, 11, 20, 18, 23, 28, 21, 8, 25, 56
-```
-
-## 9. Initial Rules and Effects
-
-Conditions:
-
-```text
-hasItem
-hasSkill
-hasCodeWord
-missingCodeWord
 moneyAtLeast
-all
-any
 ```
 
-Effects:
+Currently supported effects:
 
 ```text
 addItem
-removeItem
-addCodeWord
 removeMoney
-addMoney
-setCurrentEpisode
 ```
 
-Executable rule data should use strongly typed C# objects serialized to JSONB.
+Deferred for later phases:
 
-## 10. Save Behavior
+- code-word branching
+- larger effect vocabulary
+- richer composed conditions
+- full history-aware rules
+
+## 11. Save Behavior
 
 Anonymous user:
 
-- save automatically to browser localStorage
-- start creates a browser-only local save id
-- `/play/{gameId}` uses that browser-only local save id for anonymous games
-- the anonymous local save id is not a server-side `SaveGame` id
-- backend still validates choices and applies rules through stateless anonymous game endpoints
-- browser sends the current anonymous state to the backend and stores the returned updated state
-- no account required
-- limited to anonymous-accessible books
+- start creates a browser-owned local save record
+- the save record contains `gamebookSlug`, `currentEpisodeKey`, and `playerState`
+- `/play/{gameId}` uses the browser-owned save id, not a server `SaveGame` id
+- backend endpoints are stateless for anonymous play
+- browser sends the current save state to the backend and stores the updated state returned
 
-Authenticated user:
+Deferred authenticated behavior:
 
-- save automatically to PostgreSQL
-- save belongs to user account
-- browser authenticates using HttpOnly Identity cookie
+- account-owned PostgreSQL saves
+- HttpOnly Identity cookie authentication
+- save continuity across devices
 
-Logout while playing:
-
-- server save remains on server
-- user is redirected to `/login` or `/books`
-- no automatic conversion to local save
-
-## 11. API Endpoints for Milestone 1
+## 12. API Endpoints for the Current Slice
 
 Books:
 
@@ -316,169 +318,86 @@ GET /api/books
 GET /api/books/{slug}
 ```
 
-Auth:
-
-```http
-POST /api/auth/register
-POST /api/auth/login
-POST /api/auth/logout
-GET  /api/auth/me
-```
-
-Auth pages are Vite multipage frontend pages that call these API endpoints. ASP.NET Identity manages users and issues the HttpOnly authentication cookie.
-
 Games:
 
 ```http
-POST /api/games/start
-GET  /api/games/{saveId}
-POST /api/games/{saveId}/choice
 POST /api/games/anonymous/start
+POST /api/games/anonymous/state
 POST /api/games/anonymous/choice
 ```
 
-Authenticated server-save endpoints use `[Authorize]`.
+Reference:
 
-Anonymous saves are persisted in browser localStorage. Anonymous endpoints are stateless: the frontend sends the current local save state, the backend validates choices and applies rules, and the frontend stores the updated state returned by the backend.
-
-## 12. Frontend Structure
-
-```text
-frontend/
-  books.html
-  book-details.html
-  login.html
-  register.html
-  play.html
-frontend/src/
-  pages/
-    books.ts
-    book-details.ts
-    login.ts
-    register.ts
-  reader/
-    play.ts
-  shared/
-    api/
-    auth/
-    saves/
-    models/
-    components/
-  styles/
-```
-
-Public/auth pages use classic multipage-style navigation.
-
-Those pages are client-rendered by Vanilla TypeScript after loading their own HTML entry point. They call backend API endpoints for data and actions.
-
-The reader at `/play/{gameId}` has SPA behavior.
-
-Frontend API calls use cookies:
-
-```typescript
-fetch("/api/auth/me", {
-    credentials: "include"
-});
-```
-
-Do not store auth tokens in localStorage or sessionStorage.
+- detailed endpoint descriptions live in `docs/api/endpoints.md`
 
 ## 13. Milestone Breakdown
 
-### Milestone 1.1 — Repository and docs alignment
+### Milestone 1.1 - Foundation
 
-- update ADR index with ADR-0022 to ADR-0026
-- update architecture and AI docs
-- update auth wording from JWT to Identity cookies
-- add `content/gamebooks/` folder
+- solution and project structure
+- MediatR setup
+- EF Core setup
+- initial migration
+- Docker Compose for API and PostgreSQL
 
-### Milestone 1.2 — Solution skeleton
+### Milestone 1.2 - Catalog and runtime package loading
 
-- create ASP.NET solution
-- create `GameBook.Api`, `GameBook.Core`, `GameBook.Data`, `GameBook.Tests`
-- add Vite frontend
-- add Docker Compose with PostgreSQL
-- add health endpoint
+- seed book catalog metadata into PostgreSQL
+- load runtime package from `content/gamebooks/`
+- expose public books endpoints
 
-### Milestone 1.3 — Domain and persistence
+### Milestone 1.3 - Anonymous game engine slice
 
-- create aggregates and entities
-- create strongly typed condition/effect models
-- create DbContext and Fluent API mappings
-- configure JSONB
-- create first EF migration
+- implement anonymous start endpoint
+- implement anonymous state rebuild endpoint
+- implement anonymous choice execution endpoint
+- validate available choices in the backend
+- apply currently supported effects
 
-### Milestone 1.4 — Auth slice
+### Milestone 1.4 - Frontend vertical slice
 
-- configure ASP.NET Identity
-- configure cookie authentication
-- configure API unauthorized behavior to return 401/403
-- create register/login/logout/me slices
-- create Vite multipage frontend login/register pages that call auth API endpoints
+- implement `/books`
+- implement `/books/{slug}`
+- implement `/play/{gameId}`
+- persist local saves in browser storage
+- connect frontend to anonymous game endpoints
 
-### Milestone 1.5 — Import seed package
+### Milestone 1.5 - Verification
 
-- create `content/gamebooks/kotarakat-avreya/gamebook.json`
-- add selected episode subset
-- create import service
-- validate package structure
-- import into PostgreSQL
+- backend unit and integration-oriented tests
+- frontend production build verification
+- Docker Compose runtime verification
 
-### Milestone 1.6 — Public book pages
+## 14. Definition of Done for the Current Slice
 
-- create books API
-- create Vite multipage `/books`
-- create Vite multipage `/books/{slug}`
-- show book details and start button
-
-### Milestone 1.7 — Game start and saves
-
-- create `StartGame` feature
-- create anonymous stateless start endpoint
-- anonymous start creates local save
-- authenticated start creates PostgreSQL save
-- create `LocalSaveProvider` and `ServerSaveProvider`
-
-### Milestone 1.8 — Reader and game engine
-
-- create GameEngine, RulesEngine, EffectsEngine
-- create GetGameState and ExecuteChoice features
-- create anonymous stateless ExecuteChoice flow
-- render episode, diary, and available choices
-- apply effects and persist state
-
-### Milestone 1.9 — Tests
-
-- GameEngine tests
-- RulesEngine tests
-- EffectsEngine tests
-- handler tests
-- ImportService tests
-- SaveGame domain behavior tests
-
-## 14. Definition of Done for Milestone 1
-
-Milestone 1 is complete when:
+The current slice is complete when:
 
 - PostgreSQL runs in Docker
 - API runs
 - frontend runs
-- user can register and login
-- browser receives HttpOnly auth cookie
-- anonymous and authenticated users can browse books
-- users can open book details
-- users can start the `Котаракът` subset
+- user can browse books
+- user can open book details
+- user can start the seeded `Котаракът` package
 - anonymous save uses localStorage
-- authenticated save uses PostgreSQL
 - `/play/{gameId}` loads current episode
 - valid choices are shown
-- invalid choices are hidden
 - selecting a choice updates state and changes episode
-- diary shows money, items, skills, code words, and notes
-- backend tests cover core game logic
-- no admin functionality is included yet
+- diary shows money, items, skills, codeWords, and notes
+- backend tests pass
+- frontend build succeeds
 
-## 15. Non-Negotiable Rules
+## 15. Next Slice After This
+
+Next planned expansion areas:
+
+- ASP.NET Core Identity cookie authentication
+- authenticated save persistence
+- more conditions and effects
+- full-book import pipeline expansion
+- choice history
+- admin/editor tooling
+
+## 16. Non-Negotiable Rules
 
 - Do not introduce React.
 - Do not replace PostgreSQL.
@@ -489,45 +408,7 @@ Milestone 1 is complete when:
 - Do not put domain logic directly in MediatR handlers.
 - Do not create EF attributes in Core.
 - Do not create repositories for every child entity.
-- Do not create multilingual-per-field model in MVP.
 - Do not add admin editor to Milestone 1.
 - Do not hardcode `Котаракът` logic into the engine.
 - Books are data.
 - Engine is generic.
-
-## 16. Clarified Implementation Decisions
-
-- Implement a full Milestone 1 skeleton, but update documentation before writing application code.
-- Use `backend/` for .NET projects and `frontend/` for the Vite app; do not use root `src/` in MVP.
-- Use an API-first backend with a Vite multipage frontend. Public and auth pages are not server-rendered Razor/MVC pages in MVP.
-- Use classic full-page navigation for public/auth routes and SPA behavior only inside `/play/{gameId}`.
-- Anonymous `/play/{gameId}` uses a browser-only local save id stored in localStorage.
-- Anonymous game rule execution uses stateless backend endpoints so backend-owned game logic is preserved.
-- CSRF protection is out of scope for MVP and must be revisited before public exposure.
-- Production hosting and non-trivial infrastructure/security hardening are out of scope for MVP.
-- The curated gamebook subset content will be provided in the documented package format.
-
-## 17. Ready For Implementation
-
-There are no remaining open architecture decisions required before starting the Milestone 1 skeleton.
-
-## 18. Current Implementation Baseline
-
-The current implementation pass uses these concrete choices:
-
-- target `.NET 10`
-- use `xUnit` for `GameBook.Tests`
-- use `MediatR` under the available Community license
-- start local infrastructure with Docker Compose from the first backend step
-- postpone ASP.NET Core Identity implementation to the next vertical slice after the backend foundation is in place
-- implement the backend skeleton together with the first public endpoint scaffold in this pass
-
-This baseline does not change the accepted long-term MVP architecture.
-
-It only changes the execution order of the first implementation slices:
-
-1. solution and project skeleton
-2. containerized PostgreSQL and backend configuration
-3. first public endpoint scaffold
-4. Identity slice
-5. remaining game and reader slices

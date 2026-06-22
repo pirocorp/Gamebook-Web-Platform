@@ -13,6 +13,25 @@ The frontend is a Vite multipage app. Public and auth pages are separate HTML en
 
 ASP.NET Razor/MVC views are not used for MVP public or auth pages.
 
+The current implementation runs the frontend through a dedicated Vite container
+in Docker Compose and exposes it on `http://localhost:5173`.
+
+## Locked MVP UI assumptions
+
+The current frontend slice should implement these assumptions:
+
+- `/books` should feel like an editorial library page with a warm, bookish presentation
+- `/books/{slug}` should present one book in a focused details layout with a clear start action
+- `/play/{gameId}` should use a reading-first layout:
+  - centered main story column
+  - separate diary panel on desktop
+  - diary section stacked below the story on mobile
+  - large choice actions below the episode text
+- the diary should display `money`, `items`, `skills`, `codeWords`, and `notes`
+- anonymous saves should use these browser keys:
+  - `gamebook.play.saves`
+  - `gamebook.play.activeSaveId`
+
 ## Routing
 
 Classic multipage-style navigation:
@@ -35,6 +54,20 @@ SPA behavior only for:
 For anonymous games, `{gameId}` is a browser-only local save id stored in localStorage. It is not a server-side save id.
 
 Anonymous rule execution uses stateless backend endpoints. The frontend sends the current local save state and stores the updated state returned by the backend.
+
+Recommended frontend flow:
+
+- `/books` loads the catalog from `GET /api/books`
+- `/books/{slug}` loads book details from `GET /api/books/{slug}`
+- starting play uses `POST /api/games/anonymous/start`
+- restoring play uses `POST /api/games/anonymous/state`
+- submitting a choice uses `POST /api/games/anonymous/choice`
+- the browser persists the returned anonymous save in `localStorage`
+
+Current implementation note:
+
+- the frontend route layer is handled by Vite rewrites for `/books`, `/books/{slug}`, and `/play/{gameId}`
+- the frontend proxies `/api` requests to the backend instead of hardcoding browser-side cross-origin calls
 
 ## Authentication
 

@@ -58,15 +58,15 @@ Implemented today:
 - anonymous stateless game endpoints for start, state, and choice execution
 - backend rule execution for `moneyAtLeast`, `addItem`, and `removeMoney`
 - automatic book catalog seeding from the curated package
+- Vite frontend for `/books`, `/books/{slug}`, and `/play/{gameId}`
+- anonymous localStorage persistence using `gamebook.play.saves` and `gamebook.play.activeSaveId`
+- frontend Docker container exposed on `http://localhost:5173`
 - backend and domain test coverage with `xUnit`
-- verified Docker runtime and live Scalar API UI
+- verified Docker runtime, live Scalar API UI, and live frontend routes
 
 Not implemented yet:
 
-- Vite frontend application
 - ASP.NET Core Identity cookie authentication
-- `/play/{gameId}` reader flow
-- browser-side anonymous localStorage integration
 - authenticated saves
 - code-word branching and other later-phase mechanics
 
@@ -118,8 +118,8 @@ Milestone 1 focuses on a first playable vertical slice:
 
 Current status relative to Milestone 1:
 
-- done: backend foundation, database foundation, Docker local setup, health endpoint, book list endpoint, book details endpoint, anonymous game start/state/choice endpoints, curated package loading, backend test project
-- not started or still pending: frontend pages, browser localStorage integration, reader UI, broader game engine expansion
+- done: backend foundation, database foundation, Docker local setup, health endpoint, book list endpoint, book details endpoint, anonymous game start/state/choice endpoints, curated package loading, frontend pages, anonymous localStorage integration, backend test project
+- not started or still pending: authenticated saves, auth pages, broader game engine expansion
 
 ### Locked Milestone 1 Backend Decisions
 
@@ -143,6 +143,23 @@ Not part of this first backend slice:
 - authenticated save persistence
 - ASP.NET Core Identity flows
 
+### Locked Milestone 1 Frontend Assumptions
+
+The frontend MVP for the current slice is locked to these assumptions:
+
+1. `/books` visual direction:
+   an editorial library-style page with a warm, print-inspired presentation rather than an admin or dashboard layout
+2. `/books/{slug}` role:
+   a focused book details page with book metadata, description, and a clear action to start anonymous play
+3. `/play/{gameId}` layout:
+   a centered reading surface for episode text, a separate diary panel for player state, and large choice actions below the story
+4. Reader diary content:
+   show `money`, `items`, `skills`, `codeWords`, and `notes`
+5. Anonymous localStorage keys:
+   use `gamebook.play.saves` for stored saves and `gamebook.play.activeSaveId` for the currently active browser save id
+
+These assumptions are implementation targets for the frontend slice unless a later decision explicitly changes them.
+
 ### What We Just Implemented
 
 The current backend slice delivers a playable anonymous API flow against the curated
@@ -163,8 +180,10 @@ What was verified:
 
 - `dotnet build GameBook.WebPlatform.sln`
 - `dotnet test GameBook.WebPlatform.sln`
+- `npm.cmd run build` in `frontend/`
 - `docker compose up --build -d`
 - live API checks for health, books, anonymous game flow, and Scalar UI
+- live frontend route checks for `/books`, `/books/kotarakat-avreya`, and `/play/{gameId}`
 
 Out of scope for Milestone 1:
 
@@ -192,6 +211,7 @@ Expected result:
 
 - PostgreSQL starts on `localhost:5432`
 - the API starts on `http://localhost:8080`
+- the frontend starts on `http://localhost:5173`
 - the API docs UI is available at `http://localhost:8080/scalar`
 - pending EF Core migrations are applied on API startup for the current local setup
 
@@ -231,6 +251,7 @@ curl http://localhost:8080/scalar
 curl http://localhost:8080/api/health
 curl http://localhost:8080/api/books
 curl -X POST http://localhost:8080/api/games/anonymous/start -H "Content-Type: application/json" -d "{\"gamebookSlug\":\"kotarakat-avreya\"}"
+curl http://localhost:5173/books
 ```
 
 ### 5. Run The API Outside Docker If Needed

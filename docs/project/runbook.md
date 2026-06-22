@@ -50,6 +50,7 @@ Use Docker Compose when:
 - you want the normal local runtime path
 - you want API and PostgreSQL wired together automatically
 - you want the API on `http://localhost:8080`
+- you want the frontend on `http://localhost:5173`
 
 Use local `dotnet run` for the API when:
 
@@ -75,6 +76,9 @@ docker compose up --build
 
 For the current local setup, the API applies pending EF Core migrations on
 startup.
+
+The frontend container runs the Vite dev server and proxies `/api` calls to the
+API container.
 
 Start only PostgreSQL:
 
@@ -120,6 +124,12 @@ Docker Compose API base URL:
 http://localhost:8080
 ```
 
+Docker Compose frontend base URL:
+
+```text
+http://localhost:5173
+```
+
 Local `dotnet run` API base URL:
 
 ```text
@@ -134,6 +144,9 @@ localhost:5432
 
 Current manual verification endpoints:
 
+- `GET /books` through the frontend dev server
+- `GET /books/{slug}` through the frontend dev server
+- `GET /play/{gameId}` through the frontend dev server
 - `GET /scalar`
 - `GET /api/health`
 - `GET /api/books`
@@ -152,9 +165,14 @@ backend/GameBook.Api/GameBook.Api.http
 
 - Confirm `docker compose config` resolves successfully before assuming Compose changes are valid.
 - Confirm the `api` service exposes host port `8080`.
+- Confirm the `frontend` service exposes host port `5173`.
 - Confirm the `postgres` service is healthy before assuming database-dependent API work should succeed.
 - Confirm `dotnet build GameBook.WebPlatform.sln` succeeds after backend code changes.
 - Confirm `dotnet test GameBook.WebPlatform.sln` succeeds after backend or domain changes.
+- Confirm `npm.cmd run build` succeeds in `frontend/`.
+- Confirm `GET http://localhost:5173/books` returns `200 OK`.
+- Confirm `GET http://localhost:5173/books/kotarakat-avreya` returns `200 OK`.
+- Confirm `GET http://localhost:5173/play/{gameId}` returns `200 OK` for a route-shaped URL.
 - Confirm `GET /api/health` returns `200 OK`.
 - Confirm `GET /api/books` returns the seeded curated book catalog.
 - Confirm `POST /api/games/anonymous/start` returns episode `1` for `kotarakat-avreya`.
@@ -170,6 +188,13 @@ If Docker Compose fails before container startup:
 - run `docker compose config`
 - inspect `docker-compose.yml`
 - confirm Docker Desktop or the local Docker daemon is running
+
+If frontend routes fail unexpectedly:
+
+- confirm the `frontend` container is running
+- confirm Vite is listening on host port `5173`
+- confirm the route rewrite rules in `frontend/vite.config.ts` still map `/books/{slug}` and `/play/{gameId}` correctly
+- confirm the Vite proxy target still points to the API service in Docker and to `localhost:8080` locally
 
 If the API container starts but cannot reach PostgreSQL:
 

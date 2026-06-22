@@ -13,6 +13,23 @@ Locked Milestone 1 backend decisions:
 - supported mechanics are limited to `moneyAtLeast`, `addItem`, and `removeMoney`
 - authenticated save persistence and Identity flows are deferred beyond this first backend slice
 
+Locked frontend assumptions for the same slice:
+
+- `/books` uses an editorial library-style presentation
+- `/books/{slug}` uses a focused details page with a start action
+- `/play/{gameId}` uses a reading-first layout with a separate diary panel
+- diary fields shown are `money`, `items`, `skills`, `codeWords`, and `notes`
+- browser storage keys are `gamebook.play.saves` and `gamebook.play.activeSaveId`
+
+Current implementation status:
+
+- backend anonymous play endpoints are implemented
+- frontend `/books`, `/books/{slug}`, and `/play/{gameId}` are implemented
+- PostgreSQL currently stores catalog metadata only
+- playable episode and choice data is still served from
+  `content/gamebooks/{slug}/gamebook.json`
+- Docker Compose runs API, PostgreSQL, and frontend together for local development
+
 See `docs/project/implementation-plan.md` for details.
 
 ## Later milestones
